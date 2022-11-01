@@ -33,7 +33,7 @@ func Setup() *gin.Engine {
 	//设置时区
 
 	//生产模式
-	//gin.SetMode(gin.ReleaseMode)
+	gin.SetMode(gin.ReleaseMode)
 	r := gin.Default()
 	r.Use(Cors())
 	r.Static("/static", "./static")
