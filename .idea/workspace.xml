@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="ALL" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="5db17068-649c-4ee3-81c5-a563fb5e293a" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/MgHash.sock" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmd/root.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmd/server.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmd/stop.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/common/common.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/config.yaml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/controller/admin/admin.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/controller/admin/bank.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/controller/admin/config.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/controller/admin/country.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/controller/admin/general.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/controller/admin/goods.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/controller/admin/log.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/controller/admin/payChannels.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/controller/admin/record.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/controller/admin/slideshow.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/controller/admin/statistics.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/controller/admin/task.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/controller/admin/user.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/controller/admin/verifyStruct.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/controller/admin/vip.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/controller/client/bank.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/controller/client/client.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/controller/client/general.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/controller/client/language.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/controller/client/pay.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/controller/client/record.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/controller/client/slideshow.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/controller/client/task.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/controller/client/verifyStruct.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/dao/mmdb/GeoLite2-City.mmdb" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/dao/mmdb/GeoLite2-Country.mmdb" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/dao/mmdb/mmdb.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/dao/mmdb/mmdb_test.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/dao/mysql/mysql.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/dao/redis/redis.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/error/errot.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/go.mod" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/go.sum" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/logger/logger.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/main.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/model/accountChange.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/model/administrator.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/model/bankCard.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/model/bankCardInformation.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/model/bankPay.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/model/config.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/model/country.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/model/getTask.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/model/goods.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/model/log.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/model/menu.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/model/payChannels.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/model/record.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/model/role.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/model/slideshow.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/model/statistics.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/model/statistics_test.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/model/task.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/model/taskOrder.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/model/task_test.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/model/user.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/model/vip.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/process/record.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/router/router.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/setting/setting.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/start.sh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/index.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/upload/$.png.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/upload/0ff5a8c5ef0c96aec9dc1b7c94d8c1a4.png.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/upload/2SMtYvSg.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/upload/D5xAV0YU.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/upload/rfBd56ti.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tools/google.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tools/tools.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tools/tools_test.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/web_app.log" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/1.txt" beforeDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="GOROOT" url="file://$PROJECT_DIR$/../../../../../Program Files (x86)/Go" />
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
+  </component>
+  <component name="ProjectId" id="2Gwm2gJc4AT80OeC2OTTm0DVjTo" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.go.formatter.settings.were.checked": "true",
+    "RunOnceActivity.go.migrated.go.modules.settings": "true",
+    "RunOnceActivity.go.modules.go.list.on.any.changes.was.set": "true",
+    "RunOnceActivity.go.watchers.conflict.with.on.save.actions.check.performed": "true",
+    "WebServerToolWindowFactoryState": "false",
+    "go.import.settings.migrated": "true",
+    "go.sdk.automatically.set": "true",
+    "last_opened_file_path": "C:/Users/fhg/Desktop/project/doTask"
+  }
+}]]></component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\fhg\Desktop\project\doTask" />
+    </key>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VgoProject">
+    <settings-migrated>true</settings-migrated>
+  </component>
+</project>

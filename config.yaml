@@ -1,0 +1,37 @@
+###系统配置文件
+app:
+  name: "web_app"
+  mode: "dev"
+  port: 8787
+  version: "v1"
+
+#日志
+log:
+  level: "debug"
+  filename: "web_app.log"
+  max_size: 300  #每个人日志文件大小
+  max_age: 30    #存储天数
+  max_backups: 7 #备份数量
+
+#数据库 配置
+mysql:
+  host: "127.0.0.1"
+  port: "3306"
+  user: "dotask"
+  password: "h5jnPdnNtr85KYB5"
+  dbname: "dotask"
+
+
+#redis  配置
+redis:
+  host: "127.0.0.1"
+  port: 6379
+  db: 9
+  password: ""
+  pool_size: 20
+
+
+
+# 配置
+Config:
+  ip: "http://127.0.0.1"    #回调地址
