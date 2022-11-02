@@ -6,7 +6,7 @@ type RegisterVerify struct {
 	Phone          string `form:"phone"  binding:"omitempty,max=20"` //非必要
 	Password       string `form:"password"  binding:"required,min=6,max=20"`
 	PayPassword    string `form:"pay_password"  binding:"required,min=6,max=6"`
-	InvitationCode string `form:"invitation_code"  binding:"required,min=8,max=8"` //邀请码
+	InvitationCode string `form:"invitation_code"  binding:"required,min=6,max=6"` //邀请码
 }
 
 // LoginVerify 登录参数
