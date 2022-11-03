@@ -85,7 +85,7 @@ func (b *BPay) CreatedOrder(db *gorm.DB) (string, error) {
 		logger.SystemLogger("pay", "CreatedOrder", string(all), 82)
 		return "", eeor.OtherError("fail")
 	}
-	logger.SystemLogger("pay", "CreatedOrder", string(all), 85)
+	zap.L().Debug("pay|CreatedOrder|请求响应:" + string(marshal))
 	return returnData.Data.PaymentUrl, nil
 }
 
