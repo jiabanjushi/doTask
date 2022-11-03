@@ -16,7 +16,7 @@ log:
 #数据库 配置
 mysql:
   host: "127.0.0.1"
-  port: "3306"
+  port: "3333"
   user: "dotask"
   password: "h5jnPdnNtr85KYB5"
   dbname: "dotask"
@@ -25,7 +25,7 @@ mysql:
 #redis  配置
 redis:
   host: "127.0.0.1"
-  port: 6379
+  port: 6666
   db: 9
   password: "wy011620."
   pool_size: 20
