@@ -75,7 +75,6 @@ func OperationUser(c *gin.Context) {
 			client.ReturnSuccess2000DataCode(c, hs, "ok")
 			return
 		}
-
 		//获取 用户的详情
 		if operation == "detailOne" {
 			userId := c.PostForm("user_id")
@@ -139,7 +138,6 @@ func OperationUser(c *gin.Context) {
 
 			return
 		}
-
 		//加减余额
 		if operation == "balance" {
 			userId := c.PostForm("user_id")
@@ -164,16 +162,39 @@ func OperationUser(c *gin.Context) {
 
 		}
 
+		//获取邀请码  和链接
+		if operation == "invite_code" {
+			userArray := strings.Split(whoMap.AgencyUsername, ",")
+			var data []map[string]string
+			config := model.Config{}
+			mysql.DB.Where("id=?", 1).First(&config)
+			for _, i2 := range userArray {
+				user := model.User{}
+				err := mysql.DB.Where("username=?", i2).First(&user).Error
+				if err == nil {
+					data = append(data, map[string]string{"invite_code": user.InvitationCode, "url": config.WebsiteH5 + "?code=" + user.InvitationCode})
+				}
+
+			}
+			client.ReturnSuccess2000DataCode(c, data, "ok")
+			return
+		}
+
 		//普通查询
 		limit, _ := strconv.Atoi(c.PostForm("limit"))
 		page, _ := strconv.Atoi(c.PostForm("page"))
 		sl := make([]model.User, 0)
 		db := mysql.DB
-		if whoMap.AgencyUsername != "" {
-			arrayAU := strings.Split(whoMap.AgencyUsername, ",")
-			db = db.Where("top_agent in  (?)", arrayAU)
+
+		if topName, isE := c.GetPostForm("top_agent"); isE == true {
+			db = db.Where("top_agent  =? ", topName)
 		} else {
-			db = db.Where("top_agent !=?", "")
+			if whoMap.AgencyUsername != "" {
+				arrayAU := strings.Split(whoMap.AgencyUsername, ",")
+				db = db.Where("top_agent in  (?)", arrayAU)
+			} else {
+				db = db.Where("top_agent !=?", "")
+			}
 		}
 
 		if username, isExist := c.GetPostForm("username"); isExist == true {
@@ -184,6 +205,18 @@ func OperationUser(c *gin.Context) {
 		db.Model(model.User{}).Count(&total)
 		db = db.Model(&model.User{}).Offset((page - 1) * limit).Limit(limit).Order("created desc")
 		db.Find(&sl)
+
+		for i, user := range sl {
+			gt := model.GetTask{}
+			err := mysql.DB.Where("user_id=? and  status=?", user.ID, 1).First(&gt).Error
+			if err == nil {
+				task := model.Task{}
+				mysql.DB.Where("id=?", gt.TaskId).First(&task)
+				sl[i].DoingTask = task
+			}
+
+		}
+
 		ReturnDataLIst2000(c, sl, total)
 
 	}
@@ -197,8 +230,25 @@ func OperationUser(c *gin.Context) {
 			return
 		}
 
-		update := make(map[string]interface{})
+		if status, isExist := c.GetPostForm("bank_card_information"); isExist == true {
+			update := make(map[string]interface{})
+			update["Phone"] = c.PostForm("phone")
+			update["Mail"] = c.PostForm("mail")
+			update["Kinds"], _ = strconv.Atoi(c.PostForm("Kinds"))
+			update["BankCode"] = c.PostForm("bank_code")
+			update["BankName"] = c.PostForm("bank_name")
+			update["Card"] = c.PostForm("card")
+			update["Username"] = c.PostForm("username")
+			err := mysql.DB.Model(&model.BankCardInformation{}).Where("id=?", status).Update(update).Error
+			if err != nil {
+				client.ReturnErr101Code(c, "修改银行卡失败")
+				return
+			}
+			client.ReturnSuccess2000Code(c, "修改成功")
+			return
+		}
 
+		update := make(map[string]interface{})
 		//修改密码
 		if status, isExist := c.GetPostForm("password"); isExist == true {
 			update["Password"] = status

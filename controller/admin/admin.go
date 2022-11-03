@@ -153,8 +153,28 @@ func OperationAdmin(c *gin.Context) {
 		admin.Nickname = c.PostForm("nickname")
 		admin.RoleId, _ = strconv.Atoi(c.PostForm("role_id"))
 		admin.WhiteIps = c.PostForm("white_ips")
-		admin.GoogleCode = c.PostForm("google_code")
-		admin.AgencyUsername = c.PostForm("agency_username")
+		//admin.GoogleCode = c.PostForm("google_code")
+		if code, isE := c.GetPostForm("google_code"); isE == true {
+			err := mysql.DB.Model(&model.Admin{}).Where("id=?", id).Update(map[string]interface{}{"GoogleCode": code}).Error
+			if err != nil {
+				client.ReturnErr101Code(c, err.Error())
+				return
+			}
+			client.ReturnSuccess2000Code(c, "修改成功")
+			return
+		}
+
+		if code, isE := c.GetPostForm("agency_username"); isE == true {
+			err := mysql.DB.Model(&model.Admin{}).Where("id=?", id).Update(map[string]interface{}{"AgencyUsername": code}).Error
+			if err != nil {
+				client.ReturnErr101Code(c, err.Error())
+				return
+			}
+			client.ReturnSuccess2000Code(c, "修改成功")
+			return
+		}
+
+		//admin.AgencyUsername = c.PostForm("agency_username")
 		err := mysql.DB.Model(&model.Admin{}).Where("id=?", id).Update(&admin).Error
 		if err != nil {
 			client.ReturnErr101Code(c, err.Error())

@@ -32,6 +32,9 @@ func OperationConfiguration(c *gin.Context) {
 			adminGoogleStatus, _ := strconv.Atoi(c.PostForm("admin_google_status"))
 			newConfig.RequestLimit = requestLimit
 			newConfig.AdminGoogleStatus = adminGoogleStatus
+			newConfig.SettlementWaitTime, _ = strconv.ParseInt(c.PostForm("settlement_wait_time"), 10, 64)
+			newConfig.TaskTimeout, _ = strconv.ParseInt(c.PostForm("task_timeout"), 10, 64)
+			newConfig.WebsiteH5 = c.PostForm("website_h5")
 			//时区发生变化
 			if newConfig.TimeZone != c.PostForm("time_zone") {
 				loc, err := time.LoadLocation(c.PostForm("time_zone"))

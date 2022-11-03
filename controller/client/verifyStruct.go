@@ -2,7 +2,7 @@ package client
 
 // RegisterVerify 注册参数校验
 type RegisterVerify struct {
-	Username       string `form:"username"  binding:"required,min=4,max=10"`
+	Username       string `form:"username"  binding:"required,min=4,max=20"`
 	Phone          string `form:"phone"  binding:"omitempty,max=20"` //非必要
 	Password       string `form:"password"  binding:"required,min=6,max=20"`
 	PayPassword    string `form:"pay_password"  binding:"required,min=6,max=6"`
@@ -11,6 +11,6 @@ type RegisterVerify struct {
 
 // LoginVerify 登录参数
 type LoginVerify struct {
-	Username string `form:"username"  binding:"required,min=4,max=10"`
+	Username string `form:"username"  binding:"required,min=4,max=20"`
 	Password string `form:"password"  binding:"required,min=6,max=20"`
 }

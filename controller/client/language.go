@@ -11,9 +11,9 @@ var (
 //登录返回信息
 
 var (
-	LoginErr01 = "Sorry, the account or password is wrong" //loginPassword
-
-	PasswordErr = "The original password you entered is incorrect" //PasswordErr
+	LoginErr01   = "Sorry, the account or password is wrong"        //loginPassword
+	PasswordErr  = "The original password you entered is incorrect" //PasswordErr
+	NoActivation = "NoActivation"
 )
 
 // LimitWait 全局作用
@@ -49,4 +49,5 @@ var (
 	NotRechargeMoney   = "The recharge amount can not be lower than or greater than the set value"
 	NOEnoughMoney      = "Sorry, your balance is not enough"
 	NoBindBankCard     = "Sorry, you don't have a bank card attached"
+	PayFail            = "PayFail" //拉起支付订单失败
 )

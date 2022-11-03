@@ -87,7 +87,7 @@ func Register(c *gin.Context) {
 	Log := model.Log{Kinds: 1, Status: 1, Content: saveU.Username + "|" + "注册成功", Ip: c.ClientIP(), Country: country}
 	Log.CreateLogger(mysql.DB)
 	//注册人数统计
-	st := model.Statistics{RegisterNum: 1, TopAgent: saveU.TopAgent}
+	st := model.Statistics{RegisterNum: 1}
 	st.CreatedStatistics(mysql.DB)
 	ReturnSuccess2000Code(c, RegisterSuccess)
 	return
@@ -109,6 +109,12 @@ func Login(c *gin.Context) {
 		ReturnErr101Code(c, map[string]interface{}{"identification": "loginPassword", "msg": LoginErr01})
 		return
 	}
+
+	//if user.VipId == 1 {
+	//	ReturnErr101Code(c, map[string]interface{}{"identification": "NoActivation", "msg": NoActivation})
+	//	return
+	//}
+
 	//修改登录的数据
 	user.TheScLoginIp = user.TheLastLoginIp
 	user.TheScLoginTime = user.TheLastLoginTime
@@ -123,7 +129,7 @@ func Login(c *gin.Context) {
 	//更新日统计
 	result, _ := redis.Rdb.HExists("LoginData", user.Username).Result()
 	if result == false {
-		st := model.Statistics{LoginNum: 1, TopAgent: user.TopAgent}
+		st := model.Statistics{LoginNum: 1}
 		st.CreatedStatistics(mysql.DB)
 		redis.Rdb.HSet("LoginData", user.Username, 1)
 	}

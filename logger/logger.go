@@ -70,7 +70,6 @@ func GinLogger() gin.HandlerFunc {
 			zap.String("client-agent", c.Request.UserAgent()),
 			zap.String("errors", c.Errors.ByType(gin.ErrorTypePrivate).String()),
 			zap.Duration("cost", cost),
-
 		)
 	}
 }
@@ -121,5 +120,14 @@ func GinRecovery(stack bool) gin.HandlerFunc {
 		}()
 		c.Next()
 	}
+
+}
+
+func SystemLogger(packageName string, funName string, msg string, line int) {
+	zap.L().Info(packageName,
+		zap.String("timeAt", time.Now().Format("2006-01-02 15:04:05")),
+		zap.String("func", funName),
+		zap.String("msg", msg),
+		zap.Int("line", line))
 
 }

@@ -83,16 +83,30 @@ func Recharge(c *gin.Context) {
 			ReturnErr101Code(c, map[string]interface{}{"identification": "NotRechargeMoney", "msg": NotRechargeMoney})
 			return
 		}
+
+		db := mysql.DB.Begin()
 		//创建充值订单
 		r := model.Record{UserId: whoMap.ID, Money: nowMoney, OnLine: pc.OnLine, PayChannelsId: pc.ID}
 		_, err = r.CreatedRechargeOrder(mysql.DB)
 		if err != nil {
+			db.Rollback()
 			ReturnErr101Code(c, map[string]interface{}{"identification": "MysqlErr", "msg": MysqlErr})
 			return
 		}
+
+		//
+
+		choose := model.PayChannelsChoose{Record: r, PayChannels: pc}
+		pay, err := choose.ChoosePay(db)
+		if err != nil {
+			db.Rollback()
+			ReturnErr101Code(c, map[string]interface{}{"identification": "PayFail", "msg": PayFail})
+			return
+		}
 		//发送充值请求
+		db.Commit()
 		data := make(map[string]interface{})
-		data["url"] = "https://www.baidu.com"
+		data["url"] = pay
 		ReturnSuccess2000DataCode(c, data, "ok")
 		return
 

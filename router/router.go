@@ -33,7 +33,7 @@ func Setup() *gin.Engine {
 	//设置时区
 
 	//生产模式
-	gin.SetMode(gin.ReleaseMode)
+	//gin.SetMode(gin.ReleaseMode)
 	r := gin.Default()
 	r.Use(Cors())
 	r.Static("/static", "./static")
@@ -108,8 +108,8 @@ func Setup() *gin.Engine {
 
 		{
 			//OperationFirstPage
-			administration.POST("data/firstPage", admin.OperationLogger)
-			administration.POST("data/everyday", admin.OperationLogger)
+			administration.POST("data/firstPage", admin.OperationFirstPage)
+			administration.POST("data/everyday", admin.OperationFirstPage)
 		}
 
 	}

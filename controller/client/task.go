@@ -75,11 +75,14 @@ func GetDoTask(c *gin.Context) {
 		return
 	}
 
+	config := model.Config{}
+	db.Where("id=?", 1).First(&config)
+
 	//更新数据
 	err = db.Model(&model.TaskOrder{}).Where("id=?", tp.ID).Update(&model.TaskOrder{
 		Updated:    time.Now().Unix(),
 		Status:     2,
-		GetAt:      time.Now().Unix() + 90*60,
+		GetAt:      time.Now().Unix() + config.TaskTimeout,
 		OrderMoney: model.GetRealBalance(db, gt.UserId) * tp.PayPer,
 	}).Error
 
@@ -146,10 +149,11 @@ func SubmitTaskOrder(c *gin.Context) {
 
 	//UserBalanceChangeFunc
 	change := model.UserBalanceChange{UserId: whoMap.ID, TaskOrderId: taskOrder.ID, ChangeMoney: -taskOrder.OrderMoney, Kinds: 1}
-	changeFunc, _ := change.UserBalanceChangeFunc(db)
+	changeFunc, err := change.UserBalanceChangeFunc(db)
 	if changeFunc == -1 {
 		db.Model(&model.TaskOrder{}).Where("id=?", taskOrder.ID).Update(&model.TaskOrder{Updated: time.Now().Unix(), Status: 2})
-		ReturnErr101Code(c, map[string]interface{}{"identification": "DotEnoughMoney", "msg": DotEnoughMoney})
+		//ReturnErr101Code(c, map[string]interface{}{"identification": "DotEnoughMoney", "msg": DotEnoughMoney})
+		tools.JsonWrite(c, NoEnoughMoney, nil, err.Error())
 		return
 	}
 	if changeFunc == -2 {
@@ -168,12 +172,15 @@ func SubmitTaskOrder(c *gin.Context) {
 		//进入结算
 		taskOrderArray := make([]model.TaskOrder, 0)
 		db.Where("task_id=? and get_task_id=?", taskOrder.TaskId, taskOrder.GetTaskId).Find(&taskOrderArray)
+
+		config := model.Config{}
+		db.Where("id=?", 1).First(&config)
 		for i, order := range taskOrderArray {
 			g := model.Goods{}
 			db.Where("id=?", order.GoodsId).First(&g)
 			taskOrderArray[i].GoodsName = g.GoodsName
 			taskOrderArray[i].GoodsImageUrl = g.GoodsImages
-			db.Model(model.TaskOrder{}).Where("id=?", order.ID).Update(&model.TaskOrder{ClearAt: time.Now().Unix() + 90})
+			db.Model(model.TaskOrder{}).Where("id=?", order.ID).Update(&model.TaskOrder{ClearAt: time.Now().Unix() + config.SettlementWaitTime})
 		}
 		result := make(map[string]interface{})
 		redis.Rdb.HSet("Clearing_"+whoMap.Username, "start", "doing")

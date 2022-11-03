@@ -20,7 +20,6 @@ type Statistics struct {
 	RechargeUsdtMoney float64 //USDT充值金额
 	RechargeUsdtNum   int     //USDT充值人数
 	FirstRechargeNum  int     //首冲人数
-	TopAgent          string  //代理线
 	Date              string
 	Created           int64
 	Updated           int64
@@ -45,7 +44,7 @@ func (st *Statistics) CreatedStatistics(db *gorm.DB) {
 	//这里要做并发限制(加读写锁)  --后期考虑
 	//日期判断(今日是否已经存在了数据)
 	sp := Statistics{}
-	err := db.Where("date=? and top_agent=?", time.Now().Format("2006-01-02"), st.TopAgent).First(&sp).Error
+	err := db.Where("date=? ", time.Now().Format("2006-01-02")).First(&sp).Error
 	if err != nil {
 		//今日数据不存在 创建
 		st.Created = time.Now().Unix()

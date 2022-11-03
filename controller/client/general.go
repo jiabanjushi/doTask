@@ -22,6 +22,7 @@ var (
 	ReturnOldOrderCode  = 20001 //返回已经获取的账单
 	NoBank              = 400
 	SystemMinWithdrawal = 401
+	NoEnoughMoney       = -888
 )
 
 var ()

@@ -5,13 +5,24 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="5db17068-649c-4ee3-81c5-a563fb5e293a" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/pay/pay.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/pay/pay_test.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/pay/private_ssl.pem" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/pay/public_ssl.pem" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/pay/rsa.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/controller/client/verifyStruct.go" beforeDir="false" afterPath="$PROJECT_DIR$/controller/client/verifyStruct.go" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Go File" />
+      </list>
+    </option>
   </component>
   <component name="GOROOT" url="file://$PROJECT_DIR$/../../../../../Program Files (x86)/Go" />
   <component name="Git.Settings">
@@ -27,6 +38,7 @@
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
+    "DefaultGoTemplateProperty": "Go File",
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.go.formatter.settings.were.checked": "true",
@@ -36,7 +48,8 @@
     "WebServerToolWindowFactoryState": "false",
     "go.import.settings.migrated": "true",
     "go.sdk.automatically.set": "true",
-    "last_opened_file_path": "C:/Users/fhg/Desktop/project/doTask/static"
+    "last_opened_file_path": "C:/Users/fhg/Desktop/project/doTask/static",
+    "nodejs_package_manager_path": "npm"
   }
 }]]></component>
   <component name="RecentsManager">
@@ -44,6 +57,38 @@
       <recent name="C:\Users\fhg\Desktop\project\doTask\static" />
       <recent name="C:\Users\fhg\Desktop\project\doTask" />
     </key>
+  </component>
+  <component name="RunManager" selected="Go Test.TestBPay_CreatedPayOrder in github.com/wangyi/GinTemplate/pay">
+    <configuration name="TestAddSign in github.com/wangyi/GinTemplate/pay" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
+      <module name="doTask" />
+      <working_directory value="$PROJECT_DIR$/pay" />
+      <root_directory value="$PROJECT_DIR$" />
+      <kind value="PACKAGE" />
+      <package value="github.com/wangyi/GinTemplate/pay" />
+      <directory value="$PROJECT_DIR$" />
+      <filePath value="$PROJECT_DIR$" />
+      <framework value="gotest" />
+      <pattern value="^\QTestAddSign\E$" />
+      <method v="2" />
+    </configuration>
+    <configuration name="TestBPay_CreatedPayOrder in github.com/wangyi/GinTemplate/pay" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
+      <module name="doTask" />
+      <working_directory value="$PROJECT_DIR$/pay" />
+      <root_directory value="$PROJECT_DIR$" />
+      <kind value="PACKAGE" />
+      <package value="github.com/wangyi/GinTemplate/pay" />
+      <directory value="$PROJECT_DIR$" />
+      <filePath value="$PROJECT_DIR$" />
+      <framework value="gotest" />
+      <pattern value="^\QTestBPay_CreatedPayOrder\E$" />
+      <method v="2" />
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Go Test.TestBPay_CreatedPayOrder in github.com/wangyi/GinTemplate/pay" />
+        <item itemvalue="Go Test.TestAddSign in github.com/wangyi/GinTemplate/pay" />
+      </list>
+    </recent_temporary>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TypeScriptGeneratedFilesManager">
@@ -62,5 +107,26 @@
   </component>
   <component name="VgoProject">
     <settings-migrated>true</settings-migrated>
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/pay/pay.go</url>
+          <line>42</line>
+          <option name="timeStamp" value="3" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/pay/pay_test.go</url>
+          <line>59</line>
+          <option name="timeStamp" value="6" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/pay/pay.go</url>
+          <line>46</line>
+          <option name="timeStamp" value="7" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>

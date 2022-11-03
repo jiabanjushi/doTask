@@ -282,7 +282,9 @@ func OperationTaskOder(c *gin.Context) {
 			client.ReturnErr101Code(c, "状态错误!")
 			return
 		}
-		err = mysql.DB.Model(&model.TaskOrder{}).Where("id=?", id).Update(&model.TaskOrder{Status: 2, GetAt: time.Now().Unix() + 90*60}).Error
+		config := model.Config{}
+		mysql.DB.Where("id=?", 1).First(&config)
+		err = mysql.DB.Model(&model.TaskOrder{}).Where("id=?", id).Update(&model.TaskOrder{Status: 2, GetAt: time.Now().Unix() + config.TaskTimeout}).Error
 		if err != nil {
 			client.ReturnErr101Code(c, err.Error())
 			return

@@ -14,6 +14,9 @@ type Config struct {
 	SystemMinWithdrawal float64 `gorm:"type:decimal(10,2);default:100.00"`
 	AutomaticPoints     int
 	TimeZone            string
+	SettlementWaitTime  int64  `gorm:"default:90"`
+	TaskTimeout         int64  `gorm:"default:5400"`
+	WebsiteH5           string //前段H5  域名
 }
 
 // CheckIsExistModelConfig   创建Config

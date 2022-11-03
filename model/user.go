@@ -47,8 +47,8 @@ type User struct {
 	VipName  string `gorm:"-"`
 	UserLock sync.RWMutex
 	//顶级会员应该拥有的数据
-	NumberNum int `gorm:"-"` //成员个数
-
+	NumberNum int  `gorm:"-"` //成员个数
+	DoingTask Task `gorm:"-"` //成员个数
 }
 
 // CheckIsExistModelUser 创建User
@@ -107,6 +107,9 @@ func (Ubc *UserBalanceChange) UserBalanceChangeFunc(db *gorm.DB) (int, error) {
 		if math.Abs(Ubc.ChangeMoney) > user.Balance {
 			//用户的余额不足
 			common.LockForGlobalChangeBalance.RUnlock()
+			if Ubc.Kinds == 1 {
+				return -1, eeor.OtherError(fmt.Sprintf("%f", math.Abs(Ubc.ChangeMoney-user.Balance)))
+			}
 			return -1, eeor.OtherError("Don't have enough money")
 		}
 	}
