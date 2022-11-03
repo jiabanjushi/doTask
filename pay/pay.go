@@ -2,10 +2,10 @@ package pay
 
 import (
 	"encoding/json"
-	"fmt"
 	"github.com/jinzhu/gorm"
 	eeor "github.com/wangyi/GinTemplate/error"
 	"github.com/wangyi/GinTemplate/logger"
+	"go.uber.org/zap"
 	"io/ioutil"
 	"net/http"
 	"strings"
@@ -32,7 +32,7 @@ type BPay struct {
 
 func (b *BPay) CreatedOrder(db *gorm.DB) (string, error) {
 	str := "countryCode=" + b.CountryCode + "&currencyCode=" + b.CurrencyCode + "&goods=" + b.Goods + "&merchantNo=" + b.MerchantNo + "&merchantOrderNo=" + b.MerchantOrderNo + "&notifyUrl=" + b.NotifyUrl + "&paymentAmount=" + b.PaymentAmount + "&paymentType=" + b.PaymentType
-	logger.SystemLogger("pay", "CreatedOrder", "加密字符串:"+str, 36)
+	zap.L().Debug("pay|CreatedOrder|加密字符串:" + str)
 	sign, err := RsaSign(str, b.PrivateKey)
 	if err != nil {
 		logger.SystemLogger("pay", "CreatedOrder", err.Error(), 37)
@@ -54,9 +54,7 @@ func (b *BPay) CreatedOrder(db *gorm.DB) (string, error) {
 		return "", err
 	}
 
-	fmt.Println()
-	logger.SystemLogger("pay", "CreatedOrder", "发包参数:"+string(marshal), 58)
-
+	zap.L().Debug("pay|CreatedOrder|发包参数:" + string(marshal))
 	payload := strings.NewReader(string(marshal))
 	request, err := http.NewRequest("POST", b.PayUrl, payload)
 	if err != nil {
