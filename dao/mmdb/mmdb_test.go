@@ -1,6 +1,9 @@
 package mmdb
 
-import "testing"
+import (
+	"fmt"
+	"testing"
+)
 
 func TestExampleReader_Lookup_interface(t *testing.T) {
 	tests := []struct {
@@ -31,12 +34,6 @@ func TestExampleReader_Networks(t *testing.T) {
 }
 
 func TestExampleReader_NetworksWithin(t *testing.T) {
-	tests := []struct {
-		name string
-	}{}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			ExampleReader_NetworksWithin()
-		})
-	}
+
+	fmt.Println(GetCountryForIp("182.239.92.132"))
 }

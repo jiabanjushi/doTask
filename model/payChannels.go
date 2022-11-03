@@ -68,7 +68,7 @@ func (py *PayChannelsChoose) ChoosePay(db *gorm.DB) (string, error) {
 			CountryCode:     py.PayChannels.CountryCode,
 			CurrencyCode:    py.PayChannels.CurrencySymbol,
 			PaymentType:     py.PayChannels.PayCode,
-			PaymentAmount:   strconv.FormatFloat(py.Record.Money, 'f', 10, 64),
+			PaymentAmount:   strconv.FormatFloat(py.Record.Money, 'f', 2, 64),
 			Goods:           py.PayChannels.Goods,
 			NotifyUrl:       py.PayChannels.BackUrl,
 			PayUrl:          py.PayChannels.PayUrl,
