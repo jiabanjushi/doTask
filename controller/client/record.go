@@ -87,7 +87,7 @@ func Recharge(c *gin.Context) {
 		db := mysql.DB.Begin()
 		//创建充值订单
 		r := model.Record{UserId: whoMap.ID, Money: nowMoney, OnLine: pc.OnLine, PayChannelsId: pc.ID}
-		_, err = r.CreatedRechargeOrder(mysql.DB)
+		_, err = r.CreatedRechargeOrder(db)
 		if err != nil {
 			db.Rollback()
 			ReturnErr101Code(c, map[string]interface{}{"identification": "MysqlErr", "msg": MysqlErr})
