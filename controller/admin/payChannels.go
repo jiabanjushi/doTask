@@ -69,6 +69,7 @@ func OperationPayChannels(c *gin.Context) {
 		pc.PrivateKey = c.PostForm("private_key")
 		pc.PublicKey = c.PostForm("public_key")
 		pc.CountryCode = c.PostForm("country_code")
+		pc.Goods = c.PostForm("goods")
 		err := mysql.DB.Where("name=? and kinds=?", pc.Name, 1).First(&model.PayChannels{}).Error
 		if err == nil {
 			client.ReturnErr101Code(c, " 不要重复添加")
@@ -119,6 +120,8 @@ func OperationPayChannels(c *gin.Context) {
 		pc.CountryCode = c.PostForm("country_code")
 		pc.PrivateKey = c.PostForm("private_key")
 		pc.PublicKey = c.PostForm("public_key")
+		pc.Goods = c.PostForm("goods")
+
 		err := mysql.DB.Model(&model.PayChannels{}).Where("id=?", id).Update(&pc).Error
 		if err != nil {
 			client.ReturnErr101Code(c, err.Error())
