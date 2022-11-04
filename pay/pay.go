@@ -85,7 +85,14 @@ func (b *BPay) CreatedOrder(db *gorm.DB) (string, error) {
 		logger.SystemLogger("pay", "CreatedOrder", string(all), 82)
 		return "", eeor.OtherError("fail")
 	}
-	zap.L().Debug("pay|CreatedOrder|请求响应:" + string(marshal))
+	zap.L().Debug("pay|CreatedOrder|三方返回的数据:" + string(all))
+	//数据验签
+	signStr := "countryCode=" + returnData.Data.CountryCode + "&currencyCode=" + returnData.Data.CurrencyCode + "&merchantNo=" + returnData.Data.MerchantNo + "&merchantOrderNo=" + returnData.Data.MerchantOrderNo + "&orderAmount=" + returnData.Data.OrderAmount + "&orderNo=" + returnData.Data.OrderNo + "&orderTime=" + returnData.Data.OrderTime + "&paymentAmount=" + returnData.Data.PaymentAmount + "&paymentType=" + returnData.Data.PaymentType + "&paymentUrl=" + returnData.Data.PaymentUrl
+	rsaSign, err := VerifyRsaSign(signStr, returnData.Data.Sign, b.PublicKey)
+	if rsaSign == false {
+		zap.L().Debug("pay|CreatedOrder|验签失败:" + err.Error())
+		return "", eeor.OtherError("fail")
+	}
 	return returnData.Data.PaymentUrl, nil
 }
 
