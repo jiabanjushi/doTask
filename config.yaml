@@ -34,4 +34,4 @@ redis:
 
 # 配置
 Config:
-  ip: "https://api.sssdk.xyz"    #回调地址
+  ip: "https://api.sssdk.xyz/"    #回调地址
