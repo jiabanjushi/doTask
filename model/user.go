@@ -90,6 +90,8 @@ type UserBalanceChange struct {
 	AuthenticityMoney       float64 //充值 真实金额
 	PayChannelsExchangeRate float64 //充值 渠道的会汇率
 	RejectReason            string  //针对提现 驳回原因
+	OrderNo                 string  //三方订单
+	PaymentTime             string  //支付时间
 }
 
 // UserBalanceChangeFunc 全局 余额 操作
@@ -294,7 +296,12 @@ func (Ubc *UserBalanceChange) UserBalanceChangeFunc(db *gorm.DB) (int, error) {
 		}
 
 		//账单状态修改
-		re := Record{ID: Ubc.RecordId, AuthenticityMoney: Ubc.AuthenticityMoney, SystemMoney: Ubc.AuthenticityMoney * Ubc.PayChannelsExchangeRate}
+		re := Record{ID: Ubc.RecordId,
+			AuthenticityMoney: Ubc.AuthenticityMoney,
+			SystemMoney:       Ubc.AuthenticityMoney * Ubc.PayChannelsExchangeRate,
+			ThreeOrderNum:     Ubc.OrderNo,
+			PaymentTime:       Ubc.PaymentTime,
+		}
 		_, err = re.UpdateRecordToPoint(db)
 		if err != nil {
 			db.Rollback()

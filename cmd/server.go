@@ -111,7 +111,10 @@ func run(cmd *cobra.Command, args []string) {
 	defer redis.Close()
 
 	//进程运行
+	//支付任务订单超时检查
 	go process.OrderTimeout(mysql.DB)
+	//充值订单超时检查
+	go process.RechargeTimeout(mysql.DB)
 
 	router.Setup()
 }

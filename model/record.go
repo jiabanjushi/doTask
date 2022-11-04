@@ -28,10 +28,11 @@ type Record struct {
 	OnLine            int         //1线上  2线下
 	AuthenticityMoney float64     `gorm:"type:decimal(10,2);default:0.00"` //真实金额
 	SystemMoney       float64     `gorm:"type:decimal(10,2);default:0.00"` //系统金额
+	ThreeOrderNum     string      //三方平台的订单号
+	PaymentTime       string      //支付时间
 	PayChannel        PayChannels `gorm:"-"`
 	UserName          string      `gorm:"-"`
-
-	TopAgent string `gorm:"-"`
+	TopAgent          string      `gorm:"-"`
 }
 
 // CheckIsExistModelRecord   创建User

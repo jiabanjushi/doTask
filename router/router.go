@@ -16,6 +16,7 @@ import (
 	"github.com/spf13/viper"
 	"github.com/wangyi/GinTemplate/controller/admin"
 	"github.com/wangyi/GinTemplate/controller/client"
+	"github.com/wangyi/GinTemplate/controller/pay"
 	"github.com/wangyi/GinTemplate/dao/mysql"
 	"github.com/wangyi/GinTemplate/dao/redis"
 	eeor "github.com/wangyi/GinTemplate/error"
@@ -162,9 +163,23 @@ func Setup() *gin.Engine {
 
 	}
 	//三方接口
-	pay := r.Group("pay/v1")
+	payThree := r.Group("pay/back")
 	{
-		pay.GET("")
+		//回调
+		{
+			//Bpay
+			payThree.POST("bpay", pay.BackPayBPay)
+		}
+
+	}
+	paidThree := r.Group("paid/back")
+	{
+		//代付
+		{
+			paidThree.POST("bpay", pay.BackPayBPay)
+
+		}
+
 	}
 
 	r.Run(fmt.Sprintf(":%d", viper.GetInt("app.port")))
@@ -173,7 +188,7 @@ func Setup() *gin.Engine {
 
 // PermissionToCheck 权限校验
 func PermissionToCheck() gin.HandlerFunc {
-	whiteUrl := []string{"/client/v1/register", "/client/v1/login", "/management/v1/login"}
+	whiteUrl := []string{"/client/v1/register", "/client/v1/login", "/management/v1/login", "/pay/back/bpay", "/paid/back/bpay"}
 
 	return func(c *gin.Context) {
 		if !tools.IsArray(whiteUrl, c.Request.RequestURI) {
