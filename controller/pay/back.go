@@ -155,7 +155,9 @@ LoN6qbNg1kw/yoD/7iQYbHol2ETdJplMgmK1L/EJXyy3xh3XjKL4i3wQ2jNzAUO5n
 G8QGTK4/S8tSzQwIDAQAB
 -----END PUBLIC KEY-----
 `
-	_, err = pay.VerifyRsaSign(signStr, bp.Sign, pc.PublicKey)
+	sign, err := pay.VerifyRsaSign(signStr, bp.Sign, pc.PublicKey)
+
+	fmt.Println(sign)
 	if err != nil {
 		zap.L().Debug("pay|BackPaidBPay|校验签名失败哦:" + err.Error())
 		client.ReturnSuccess2000Code(c, err.Error())
