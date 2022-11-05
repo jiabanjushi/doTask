@@ -202,6 +202,7 @@ G8QGTK4/S8tSzQwIDAQAB
 		zap.L().Debug("pay|BackPaidBPay|192|订单:" + bp.MerchantOrderNo + ",err:" + err.Error())
 		return
 	}
+	db.Commit()
 	return
 
 }
