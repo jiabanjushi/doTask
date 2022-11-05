@@ -186,7 +186,8 @@ func SubmitTaskOrder(c *gin.Context) {
 		redis.Rdb.HSet("Clearing_"+whoMap.Username, "start", "doing")
 		//进程
 		go func() {
-			time.Sleep(90 * time.Second)
+			waitTime := config.SettlementWaitTime
+			time.Sleep(time.Duration(waitTime) * time.Second)
 			to := model.TaskOrder{UserId: strconv.Itoa(whoMap.ID), GetTaskId: taskOrder.GetTaskId, TaskId: taskOrder.TaskId}
 			to.CloseAnAccount(mysql.DB)
 			redis.Rdb.HDel("Clearing_"+whoMap.Username, "start")
