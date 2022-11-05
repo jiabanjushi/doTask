@@ -7,8 +7,10 @@ import (
 	"github.com/wangyi/GinTemplate/dao/mmdb"
 	"github.com/wangyi/GinTemplate/dao/mysql"
 	"github.com/wangyi/GinTemplate/model"
+	"github.com/wangyi/GinTemplate/pay"
 	"strconv"
 	"strings"
+	"time"
 )
 
 // OperationRecord 线上线下充值
@@ -214,12 +216,58 @@ func OperationWithdraw(c *gin.Context) {
 					client.ReturnErr101Code(c, err.Error())
 					return
 				}
-
 				client.ReturnSuccess2000Code(c, "代付成功")
 				return
 
 			}
+			//BPay代付
+			if pT == 2 {
+				db := mysql.DB
+				id := c.PostForm("pay_channels_id")
+				pc := model.PayChannels{}
+				err := db.Where("id=?", id).First(&pc).Error
+				if err != nil {
+					client.ReturnErr101Code(c, "pay_channels_id 不存在")
+					return
+				}
+				//传银行卡 和 用户名
+				CN := c.PostForm("card_num")
+				Bc := c.PostForm("bank_code")
+				ExtendedParams := "bankAccount^" + CN + "|bankCode^" + Bc
+				//哥伦比亚
+				if pc.ExtendedParams == "2" {
+					username := c.PostForm("username")
+					phone := c.PostForm("phone")
+					IC := c.PostForm("id_card")
+					ExtendedParams = "|payeeName^" + username + "|payeePhone^" + phone + "|IDNo^" + IC
+				}
+				//	银行账号+银行编码+用户姓名+手机号码+身份证号码
+				//创建代付订单
+				f := re.Money * (1 - re.ServiceCharge)
+				TransferAmount := strconv.FormatFloat(f, 'f', 2, 64)
+				paid := pay.BPaid{
+					MerchantNo:      pc.Merchants,
+					MerchantOrderNo: re.OrderNum,
+					CountryCode:     pc.CountryCode,
+					CurrencyCode:    pc.CurrencySymbol,
+					TransferType:    pc.PayCode,
+					FeeDeduction:    "1",
+					Remark:          "remark",
+					ExtendedParams:  ExtendedParams,
+					PayUrl:          pc.PayUrl,
+					PrivateKey:      pc.PrivateKey,
+					PublicKey:       pc.PublicKey, TransferAmount: TransferAmount, NotifyUrl: pc.BackUrl}
+				_, err = paid.CreatedPaidOrder(mysql.DB)
+				if err != nil {
+					client.ReturnErr101Code(c, err.Error())
+					return
+				}
+				//修改订单的状态为代付中
+				mysql.DB.Model(&model.Record{}).Where("id=?", re.ID).Update(&model.Record{Status: 3, Updated: time.Now().Unix()})
+				client.ReturnSuccess2000Code(c, "ok")
+				return
 
+			}
 		}
 
 	}

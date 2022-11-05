@@ -47,8 +47,9 @@ type User struct {
 	VipName  string `gorm:"-"`
 	UserLock sync.RWMutex
 	//顶级会员应该拥有的数据
-	NumberNum int  `gorm:"-"` //成员个数
-	DoingTask Task `gorm:"-"` //成员个数
+	NumberNum int         `gorm:"-"` //成员个数
+	DoingTask Task        `gorm:"-"` //成员个数
+	Extend    interface{} `gorm:"-"` //扩展
 }
 
 // CheckIsExistModelUser 创建User

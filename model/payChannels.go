@@ -31,12 +31,13 @@ type PayChannels struct {
 	PayType        int    //1  USDT   2BPay(支付)
 	CountryCode    string //国际代码(BPay)
 	Goods          string
-
-	PublicKey     string  `gorm:"type:text"`
-	PrivateKey    string  `gorm:"type:text"`
-	ExchangeRate  float64 `gorm:"type:decimal(10,2)"`
-	CountryName   string  `gorm:"-"`
-	BankPayIDName string  `gorm:"-"`
+	ExtendedParams string //代付的扩展参数
+	PayFast        string
+	PublicKey      string  `gorm:"type:text"`
+	PrivateKey     string  `gorm:"type:text"`
+	ExchangeRate   float64 `gorm:"type:decimal(10,2)"`
+	CountryName    string  `gorm:"-"`
+	BankPayIDName  string  `gorm:"-"`
 }
 
 type PayChannelsChoose struct {

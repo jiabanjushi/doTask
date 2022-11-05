@@ -186,8 +186,7 @@ func GetMoneyInformation(c *gin.Context) {
 	return
 }
 
-//修改支付密码 或者 密码
-
+// UpdatePassword 修改支付密码 或者 密码
 func UpdatePassword(c *gin.Context) {
 	who, _ := c.Get("who")
 	whoMap := who.(model.User)
@@ -228,4 +227,12 @@ func UpdatePassword(c *gin.Context) {
 
 	}
 
+}
+
+// GetConfig 获取系统配置
+func GetConfig(c *gin.Context) {
+	config := model.Config{}
+	mysql.DB.Where("id=?", 1).First(&config)
+	ReturnSuccess2000DataCode(c, config, "ok")
+	return
 }

@@ -1,7 +1,6 @@
 package admin
 
 import (
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/wangyi/GinTemplate/controller/client"
 	"github.com/wangyi/GinTemplate/dao/mmdb"
@@ -347,6 +346,16 @@ func OperationTopUser(c *gin.Context) {
 	//who, _ := c.Get("who")
 
 	if action == "select" {
+		type DataR struct {
+			AllMoney     float64 `json:"all_money"`      // 总余额
+			AllNumberNum int     `json:"all_number_num"` //总的下级人数
+			AllRecharge  float64 `json:"all_recharge"`   //所有的充值金额
+			AllWithdraw  float64 `json:"all_withdraw"`   //所有的提现金额
+			RechargeNum  int     `json:"recharge_num"`   //充值人数
+			TaskDoNum    int     `json:"task_do_num"`    //做单人数
+			WithdrawNum  int     `json:"withdraw_num"`   //提现人数
+		}
+
 		//普通查询
 		limit, _ := strconv.Atoi(c.PostForm("limit"))
 		page, _ := strconv.Atoi(c.PostForm("page"))
@@ -359,11 +368,22 @@ func OperationTopUser(c *gin.Context) {
 		db = db.Model(&model.User{}).Offset((page - 1) * limit).Limit(limit).Order("created desc")
 		db.Find(&sl)
 		for i, user := range sl {
-			var count int
-			mysql.DB.Model(&model.User{}).Where("top_agent=?", user.Username).Count(&count)
-
-			fmt.Println(user.Username)
-			sl[i].NumberNum = count
+			var data DataR
+			//下级人数
+			mysql.DB.Model(&model.User{}).Where("top_agent=?", user.Username).Count(&data.AllNumberNum)
+			//总余额
+			mysql.DB.Raw("SELECT SUM(balance) as  all_money FROM users where top_agent=? ", user.Username).Scan(&data)
+			//所有的充值金额
+			mysql.DB.Raw("SELECT SUM(records.money) as all_recharge FROM records  LEFT JOIN users  ON  users.id=records.user_id WHERE records.kinds=2 AND records.status=3 AND  users.top_agent=?", user.Username).Scan(&data)
+			//所有的提现金额
+			mysql.DB.Raw("SELECT SUM(records.money) as all_recharge FROM records  LEFT JOIN users  ON  users.id=records.user_id WHERE records.kinds=1 AND records.status=2 AND  users.top_agent=?", user.Username).Scan(&data)
+			//recharge_num  充值的人数
+			mysql.DB.Raw("SELECT count(*) as recharge_num FROM records  LEFT JOIN users  ON  users.id=records.user_id WHERE records.kinds=2 AND records.status=3 AND  users.top_agent=? GROUP BY records.user_id", user.Username).Scan(&data)
+			//做单人数  task_do_num
+			mysql.DB.Raw("SELECT count(*) as task_do_num  FROM task_orders  LEFT JOIN users  ON users.id=task_orders.uid WHERE users.top_agent=?  GROUP BY task_orders.uid", user.Username).Scan(&data)
+			//提现人数
+			mysql.DB.Raw("SELECT count(*)  as withdraw_num FROM records  LEFT JOIN users  ON  users.id=records.user_id WHERE records.kinds=1 AND records.status=2 AND  users.top_agent=?", user.Username).Scan(&data)
+			sl[i].Extend = data
 		}
 
 		ReturnDataLIst2000(c, sl, total)

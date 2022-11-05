@@ -26,7 +26,7 @@ func OperationPayChannels(c *gin.Context) {
 		var total int
 		//条件
 		db.Model(model.PayChannels{}).Count(&total)
-		db = db.Model(&model.PayChannels{}).Offset((page - 1) * limit).Limit(limit).Order("updated desc")
+		db = db.Model(&model.PayChannels{}).Offset((page - 1) * limit).Limit(limit).Order("created desc")
 		db.Find(&sl)
 
 		for i, channels := range sl {
@@ -70,6 +70,8 @@ func OperationPayChannels(c *gin.Context) {
 		pc.PublicKey = c.PostForm("public_key")
 		pc.CountryCode = c.PostForm("country_code")
 		pc.Goods = c.PostForm("goods")
+		pc.PayFast = c.PostForm("pay_fast")
+
 		err := mysql.DB.Where("name=? and kinds=?", pc.Name, 1).First(&model.PayChannels{}).Error
 		if err == nil {
 			client.ReturnErr101Code(c, " 不要重复添加")
@@ -99,7 +101,6 @@ func OperationPayChannels(c *gin.Context) {
 			client.ReturnSuccess2000Code(c, "OK")
 			return
 		}
-
 		pc := model.PayChannels{}
 		pc.Updated = time.Now().Unix()
 		pc.Maintenance = 1
@@ -121,7 +122,7 @@ func OperationPayChannels(c *gin.Context) {
 		pc.PrivateKey = c.PostForm("private_key")
 		pc.PublicKey = c.PostForm("public_key")
 		pc.Goods = c.PostForm("goods")
-
+		pc.PayFast = c.PostForm("pay_fast")
 		err := mysql.DB.Model(&model.PayChannels{}).Where("id=?", id).Update(&pc).Error
 		if err != nil {
 			client.ReturnErr101Code(c, err.Error())
@@ -179,7 +180,7 @@ func OperationPaidChannels(c *gin.Context) {
 		pc.Key = strings.TrimSpace(c.PostForm("key"))
 		pc.PayCode = strings.TrimSpace(c.PostForm("pay_code"))
 		pc.Merchants = strings.TrimSpace(c.PostForm("merchants"))
-		pc.BackUrl = viper.GetString("Config.ip") + "/paid/back/" + strings.TrimSpace(c.PostForm("back_url"))
+		pc.BackUrl = viper.GetString("Config.ip") + strings.TrimSpace(c.PostForm("back_url"))
 		pc.OnLine, _ = strconv.Atoi(c.PostForm("on_line"))
 		pc.CurrencySymbol = strings.TrimSpace(c.PostForm("currency_symbol"))
 		pc.CountryId, _ = strconv.Atoi(c.PostForm("country_id"))
@@ -187,6 +188,11 @@ func OperationPaidChannels(c *gin.Context) {
 		pc.Name = c.PostForm("name")
 		pc.PayType, _ = strconv.Atoi(c.PostForm("pay_type"))
 		pc.ExchangeRate, _ = strconv.ParseFloat(c.PostForm("exchange_rate"), 64)
+		pc.CountryCode = c.PostForm("country_code")
+		pc.PrivateKey = c.PostForm("private_key")
+		pc.PublicKey = c.PostForm("public_key")
+
+		pc.ExtendedParams = c.PostForm("extended_params")
 		err := mysql.DB.Where("name=? and kinds=?", pc.Name, 1).First(&model.PayChannels{}).Error
 		if err == nil {
 			client.ReturnErr101Code(c, " 不要重复添加")
@@ -223,7 +229,7 @@ func OperationPaidChannels(c *gin.Context) {
 		pc.Key = strings.TrimSpace(c.PostForm("key"))
 		pc.PayCode = strings.TrimSpace(c.PostForm("pay_code"))
 		pc.Merchants = strings.TrimSpace(c.PostForm("merchants"))
-		pc.BackUrl = viper.GetString("Config.ip") + "/paid/back/" + strings.TrimSpace(c.PostForm("back_url"))
+		pc.BackUrl = viper.GetString("Config.ip") + strings.TrimSpace(c.PostForm("back_url"))
 		pc.OnLine, _ = strconv.Atoi(c.PostForm("on_line"))
 		pc.CurrencySymbol = strings.TrimSpace(c.PostForm("currency_symbol"))
 		pc.CountryId, _ = strconv.Atoi(c.PostForm("country_id"))
@@ -232,8 +238,11 @@ func OperationPaidChannels(c *gin.Context) {
 		pc.PayType, _ = strconv.Atoi(c.PostForm("pay_type"))
 		pc.BankPayId, _ = strconv.Atoi(c.PostForm("bank_pay_id"))
 		pc.Maintenance, _ = strconv.Atoi(c.PostForm("maintenance"))
+		pc.CountryCode = c.PostForm("country_code")
 		pc.ExchangeRate, _ = strconv.ParseFloat(c.PostForm("exchange_rate"), 64)
-
+		pc.ExtendedParams = c.PostForm("extended_params")
+		pc.PrivateKey = c.PostForm("private_key")
+		pc.PublicKey = c.PostForm("public_key")
 		err := mysql.DB.Model(&model.PayChannels{}).Where("id=?", id).Update(&pc).Error
 		if err != nil {
 			client.ReturnErr101Code(c, err.Error())

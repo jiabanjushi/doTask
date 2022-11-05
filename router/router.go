@@ -126,6 +126,9 @@ func Setup() *gin.Engine {
 		//UpdatePassword
 		user.POST("updatePassword", client.UpdatePassword)
 
+		//GetConfig
+		user.POST("getConfig", client.GetConfig)
+
 		//任务
 		{
 			//领取任务
@@ -151,7 +154,6 @@ func Setup() *gin.Engine {
 		}
 
 		{
-
 			//SetBank
 			user.POST("bank/setBank", client.SetBank)
 
@@ -176,7 +178,7 @@ func Setup() *gin.Engine {
 	{
 		//代付
 		{
-			paidThree.POST("bpay", pay.BackPayBPay)
+			paidThree.POST("bpay", pay.BackPaidBPay)
 
 		}
 

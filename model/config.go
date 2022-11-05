@@ -17,6 +17,7 @@ type Config struct {
 	SettlementWaitTime  int64  `gorm:"default:90"`
 	TaskTimeout         int64  `gorm:"default:5400"`
 	WebsiteH5           string //前段H5  域名
+	SystemCurrency      string `gorm:"default:MEX"` //系统货币符号
 }
 
 // CheckIsExistModelConfig   创建Config
