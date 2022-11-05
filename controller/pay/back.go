@@ -148,13 +148,16 @@ func BackPaidBPay(c *gin.Context) {
 	zap.L().Debug("pay|BackPaidBPay|签名的字符串:" + signStr)
 	fmt.Println(bp.Sign)
 	fmt.Println(pc.PublicKey)
-	//	pc.PublicKey = `-----BEGIN PUBLIC KEY-----
-	//MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCEq/XP6fFscHpRaAhMHRDR8o6p4
-	//luI0i3DolDh29n/FGccK4ibx0lnBLci31JP9mfGsnFqrZxBAvenjwD/gYKNVXtWBZ
-	//LoN6qbNg1kw/yoD/7iQYbHol2ETdJplMgmK1L/EJXyy3xh3XjKL4i3wQ2jNzAUO5n
-	//G8QGTK4/S8tSzQwIDAQAB
-	//-----END PUBLIC KEY-----
-	//`
+
+	pc.PublicKey = `-----BEGIN PUBLIC KEY-----
+	MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCEq/XP6fFscHpRaAhMHRDR8o6p4
+	luI0i3DolDh29n/FGccK4ibx0lnBLci31JP9mfGsnFqrZxBAvenjwD/gYKNVXtWBZ
+	LoN6qbNg1kw/yoD/7iQYbHol2ETdJplMgmK1L/EJXyy3xh3XjKL4i3wQ2jNzAUO5n
+	G8QGTK4/S8tSzQwIDAQAB
+	-----END PUBLIC KEY-----
+	`
+	fmt.Println("---------------------")
+	fmt.Println(pc.PublicKey)
 
 	sign, err := pay.VerifyRsaSign(signStr, bp.Sign, pc.PublicKey)
 
@@ -172,6 +175,12 @@ func BackPaidBPay(c *gin.Context) {
 		client.ReturnErr101Code(c, "无效订单号")
 		return
 	}
+
+	if record.Status == 5 {
+		c.String(http.StatusOK, "SUCCESS")
+		return
+	}
+
 	if bp.TransferStatus != "SUCCESS" {
 		mysql.DB.Model(&model.Record{}).Where("id=?", record.ID).Update(&model.Record{Status: 4, PayFailReason: bp.TransferStatus, Updated: time.Now().Unix()})
 		c.String(http.StatusOK, "SUCCESS")

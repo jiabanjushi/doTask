@@ -56,7 +56,7 @@ func SetBank(c *gin.Context) {
 			Updated:  time.Now().Unix(),
 			Kinds:    1,
 			Status:   1,
-			UserId:   whoMap.ID,
+			//UserId:   whoMap.ID,
 			Phone:    phone,
 			Mail:     mail,
 			Card:     card,

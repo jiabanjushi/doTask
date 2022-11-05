@@ -250,7 +250,7 @@ func OperationWithdraw(c *gin.Context) {
 				}
 				//	银行账号+银行编码+用户姓名+手机号码+身份证号码
 				//创建代付订单
-				f := re.Money * (1 - re.ServiceCharge)
+				f := re.Money * (1 - re.ServiceCharge) / pc.ExchangeRate
 				TransferAmount := strconv.FormatFloat(f, 'f', 2, 64)
 				paid := pay.BPaid{
 					MerchantNo:      pc.Merchants,
