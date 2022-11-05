@@ -270,7 +270,7 @@ func OperationWithdraw(c *gin.Context) {
 					return
 				}
 				//修改订单的状态为代付中
-				mysql.DB.Model(&model.Record{}).Where("id=?", re.ID).Update(&model.Record{Status: 3, Updated: time.Now().Unix()})
+				mysql.DB.Model(&model.Record{}).Where("id=?", re.ID).Update(&model.Record{Status: 3, Updated: time.Now().Unix(), PayChannelsId: pc.ID})
 				client.ReturnSuccess2000Code(c, "ok")
 				return
 

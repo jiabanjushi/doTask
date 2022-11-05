@@ -136,7 +136,7 @@ func BackPaidBPay(c *gin.Context) {
 	}
 	//Bpay
 	pc := model.PayChannels{}
-	err := mysql.DB.Where("pay_type=?", 2).First(&pc).Error
+	err := mysql.DB.Where("pay_type=? and kinds=?", 2, 2).First(&pc).Error
 	if err != nil {
 		zap.L().Debug("pay|BackPaidBPay|error:" + err.Error())
 		client.ReturnSuccess2000Code(c, err.Error())
@@ -176,7 +176,13 @@ func BackPaidBPay(c *gin.Context) {
 	c.String(http.StatusOK, "SUCCESS")
 	db := mysql.DB.Begin()
 	float, err := strconv.ParseFloat(bp.TransferAmount, 64)
-	err = db.Model(&model.Record{}).Where("id=?", record.ID).Update(&model.Record{Status: 5, Updated: time.Now().Unix(), AuthenticityMoney: float}).Error
+	err = db.Model(&model.Record{}).Where("id=?", record.ID).Update(&model.Record{
+		Status:            5,
+		Updated:           time.Now().Unix(),
+		AuthenticityMoney: float,
+		ThreeOrderNum:     bp.OrderNo,
+		PaymentTime:       bp.OrderTime,
+	}).Error
 	if err != nil {
 		db.Rollback()
 		zap.L().Debug("pay|BackPaidBPay|175|订单:" + bp.MerchantOrderNo + ",err:" + err.Error())
@@ -197,6 +203,7 @@ func BackPaidBPay(c *gin.Context) {
 		zap.L().Debug("pay|BackPaidBPay|192|订单:" + bp.MerchantOrderNo + ",err:" + err.Error())
 		return
 	}
+
 	db.Commit()
 	return
 
