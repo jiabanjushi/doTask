@@ -138,6 +138,10 @@ func OperationWithdraw(c *gin.Context) {
 			mysql.DB.Where("id=?", record.UserId).First(&user)
 			sl[i].UserName = user.Username
 			sl[i].TopAgent = user.TopAgent
+			BankCardInformation := model.BankCardInformation{}
+			mysql.DB.Where("user_id=?", record.UserId).First(&BankCardInformation)
+			sl[i].BankCardInformation = BankCardInformation
+
 		}
 		ReturnDataLIst2000(c, sl, total)
 	}
@@ -230,15 +234,18 @@ func OperationWithdraw(c *gin.Context) {
 					client.ReturnErr101Code(c, "pay_channels_id 不存在")
 					return
 				}
+
+				BankCardInformation := model.BankCardInformation{}
+				mysql.DB.Where("user_id=?", re.UserId).First(&BankCardInformation)
 				//传银行卡 和 用户名
-				CN := c.PostForm("card_num")
-				Bc := c.PostForm("bank_code")
+				CN := BankCardInformation.Card
+				Bc := BankCardInformation.BankCode
 				ExtendedParams := "bankAccount^" + CN + "|bankCode^" + Bc
 				//哥伦比亚
 				if pc.ExtendedParams == "2" {
-					username := c.PostForm("username")
-					phone := c.PostForm("phone")
-					IC := c.PostForm("id_card")
+					username := BankCardInformation.Username
+					phone := BankCardInformation.Phone
+					IC := BankCardInformation.IdCard
 					ExtendedParams = "|payeeName^" + username + "|payeePhone^" + phone + "|IDNo^" + IC
 				}
 				//	银行账号+银行编码+用户姓名+手机号码+身份证号码
@@ -268,6 +275,10 @@ func OperationWithdraw(c *gin.Context) {
 				return
 
 			}
+
+			client.ReturnErr101Code(c, "选择代付")
+			return
+
 		}
 
 	}

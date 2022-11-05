@@ -16,6 +16,7 @@ type BankCardInformation struct {
 	Username string
 	Phone    string
 	Mail     string
+	IdCard   string //身份证
 	Created  int64
 	Updated  int64
 }

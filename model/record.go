@@ -9,30 +9,31 @@ import (
 )
 
 type Record struct {
-	ID                int    `gorm:"primaryKey"`
-	OrderNum          string //账单单号  任务佣金开头 YJ
-	Kinds             int    //1 提现  2 充值 3任务佣金 4人工上分
-	Status            int
-	RejectReason      string //  针对提现 驳回原因
-	PayFailReason     string //针对三方代付失败原因
-	Remark            string
-	Money             float64 `gorm:"type:decimal(10,2)"` //涉及金额
-	TaskOrderId       int     //涉及佣金
-	Created           int64
-	Updated           int64
-	UserId            int
-	Date              string //日期
-	Artificial        int    `gorm:"default:1"` //人工加框  状态1 不是 2是
-	PayChannelsId     int    //充值渠道id
-	ServiceCharge     float64
-	OnLine            int         //1线上  2线下
-	AuthenticityMoney float64     `gorm:"type:decimal(10,2);default:0.00"` //真实金额
-	SystemMoney       float64     `gorm:"type:decimal(10,2);default:0.00"` //系统金额
-	ThreeOrderNum     string      //三方平台的订单号
-	PaymentTime       string      //支付时间
-	PayChannel        PayChannels `gorm:"-"`
-	UserName          string      `gorm:"-"`
-	TopAgent          string      `gorm:"-"`
+	ID                  int    `gorm:"primaryKey"`
+	OrderNum            string //账单单号  任务佣金开头 YJ
+	Kinds               int    //1 提现  2 充值 3任务佣金 4人工上分
+	Status              int
+	RejectReason        string //  针对提现 驳回原因
+	PayFailReason       string //针对三方代付失败原因
+	Remark              string
+	Money               float64 `gorm:"type:decimal(10,2)"` //涉及金额
+	TaskOrderId         int     //涉及佣金
+	Created             int64
+	Updated             int64
+	UserId              int
+	Date                string //日期
+	Artificial          int    `gorm:"default:1"` //人工加框  状态1 不是 2是
+	PayChannelsId       int    //充值渠道id
+	ServiceCharge       float64
+	OnLine              int                 //1线上  2线下
+	AuthenticityMoney   float64             `gorm:"type:decimal(10,2);default:0.00"` //真实金额
+	SystemMoney         float64             `gorm:"type:decimal(10,2);default:0.00"` //系统金额
+	ThreeOrderNum       string              //三方平台的订单号
+	PaymentTime         string              //支付时间
+	PayChannel          PayChannels         `gorm:"-"`
+	UserName            string              `gorm:"-"`
+	TopAgent            string              `gorm:"-"`
+	BankCardInformation BankCardInformation `gorm:"-"`
 }
 
 // CheckIsExistModelRecord   创建User
