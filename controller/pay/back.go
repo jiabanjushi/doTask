@@ -146,6 +146,8 @@ func BackPaidBPay(c *gin.Context) {
 	//校验签名
 	signStr := "countryCode=" + bp.CountryCode + "&currencyCode=" + bp.CurrencyCode + "&merchantNo=" + bp.MerchantNo + "&merchantOrderNo=" + bp.MerchantOrderNo + "&orderAmout=" + bp.OrderAmout + "&orderNo=" + bp.OrderNo + "&orderTime=" + bp.OrderTime + "&transferAmount=" + bp.TransferAmount + "&transferStatus=" + bp.TransferStatus + "&transferTime=" + bp.TransferTime
 	zap.L().Debug("pay|BackPaidBPay|签名的字符串:" + signStr)
+	fmt.Println(bp.Sign)
+	fmt.Println(pc.PublicKey)
 	_, err = pay.VerifyRsaSign(signStr, bp.Sign, pc.PublicKey)
 	if err != nil {
 		zap.L().Debug("pay|BackPaidBPay|校验签名失败哦:" + err.Error())
