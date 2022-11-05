@@ -146,22 +146,7 @@ func BackPaidBPay(c *gin.Context) {
 	//校验签名
 	signStr := "countryCode=" + bp.CountryCode + "&currencyCode=" + bp.CurrencyCode + "&merchantNo=" + bp.MerchantNo + "&merchantOrderNo=" + bp.MerchantOrderNo + "&orderAmout=" + bp.OrderAmout + "&orderNo=" + bp.OrderNo + "&orderTime=" + bp.OrderTime + "&transferAmount=" + bp.TransferAmount + "&transferStatus=" + bp.TransferStatus + "&transferTime=" + bp.TransferTime
 	zap.L().Debug("pay|BackPaidBPay|签名的字符串:" + signStr)
-	fmt.Println(bp.Sign)
-	fmt.Println(pc.PublicKey)
-
-	pc.PublicKey = `-----BEGIN PUBLIC KEY-----
-	MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCEq/XP6fFscHpRaAhMHRDR8o6p4
-	luI0i3DolDh29n/FGccK4ibx0lnBLci31JP9mfGsnFqrZxBAvenjwD/gYKNVXtWBZ
-	LoN6qbNg1kw/yoD/7iQYbHol2ETdJplMgmK1L/EJXyy3xh3XjKL4i3wQ2jNzAUO5n
-	G8QGTK4/S8tSzQwIDAQAB
-	-----END PUBLIC KEY-----
-	`
-	fmt.Println("---------------------")
-	fmt.Println(pc.PublicKey)
-
-	sign, err := pay.VerifyRsaSign(signStr, bp.Sign, pc.PublicKey)
-
-	fmt.Println(sign)
+	_, err = pay.VerifyRsaSign(signStr, bp.Sign, pc.PublicKey)
 	if err != nil {
 		zap.L().Debug("pay|BackPaidBPay|校验签名失败哦:" + err.Error())
 		client.ReturnSuccess2000Code(c, err.Error())
