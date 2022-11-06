@@ -40,6 +40,7 @@ var (
 	DotEnoughMoney       = "Don't have enough money"
 	ErrPayPassword       = "Wrong payment password"
 	HaveTaskIsSettlement = "Some tasks are clearing up and will be obtained later"
+	CantWithdraw         = "You can't withdraw money until it's finished"
 )
 
 //record

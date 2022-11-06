@@ -87,7 +87,7 @@ func Recharge(c *gin.Context) {
 		db := mysql.DB.Begin()
 		//创建充值订单
 		r := model.Record{UserId: whoMap.ID, Money: nowMoney, OnLine: pc.OnLine, PayChannelsId: pc.ID}
-		_, err = r.CreatedRechargeOrder(db)
+		_, err = r.CreatedRechargeOrder(mysql.DB)
 		if err != nil {
 			db.Rollback()
 			ReturnErr101Code(c, map[string]interface{}{"identification": "MysqlErr", "msg": MysqlErr})
@@ -129,6 +129,16 @@ func Withdraw(c *gin.Context) {
 	who, _ := c.Get("who")
 	whoMap := who.(model.User)
 	money, _ := strconv.ParseFloat(c.PostForm("money"), 64)
+
+	//判断用户是否所还有任务在做
+	GetTask := model.GetTask{}
+	err3 := mysql.DB.Where("user_id=?", whoMap.ID).Last(&GetTask).Error
+	if err3 == nil {
+		if GetTask.Status != 2 {
+			ReturnErr101Code(c, map[string]interface{}{"identification": "CantWithdraw", "msg": CantWithdraw})
+			return
+		}
+	}
 
 	//判断是否已经绑定了银行卡
 	err2 := mysql.DB.Where("user_id=?", whoMap.ID).First(&model.BankCardInformation{}).Error
