@@ -66,6 +66,7 @@ func SetBank(c *gin.Context) {
 		if err1 != nil {
 			//新增
 			save.Created = time.Now().Unix()
+			save.UserId = whoMap.ID
 			err := mysql.DB.Save(&save).Error
 			if err != nil {
 				ReturnErr101Code(c, map[string]interface{}{"identification": "MysqlErr", "msg": MysqlErr})
