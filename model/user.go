@@ -111,7 +111,7 @@ func (Ubc *UserBalanceChange) UserBalanceChangeFunc(db *gorm.DB) (int, error) {
 			//用户的余额不足
 			common.LockForGlobalChangeBalance.RUnlock()
 			if Ubc.Kinds == 1 {
-				return -1, eeor.OtherError(fmt.Sprintf("%f", math.Abs(Ubc.ChangeMoney-user.Balance)))
+				return -1, eeor.OtherError(fmt.Sprintf("%f", math.Abs(Ubc.ChangeMoney+user.Balance)))
 			}
 			return -1, eeor.OtherError("Don't have enough money")
 		}
