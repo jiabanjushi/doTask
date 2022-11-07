@@ -193,8 +193,7 @@ func Setup() *gin.Engine {
 
 // PermissionToCheck 权限校验
 func PermissionToCheck() gin.HandlerFunc {
-	whiteUrl := []string{"/client/v1/register", "/client/v1/login", "/management/v1/login", "/pay/back/bpay", "/paid/back/bpay"}
-
+	whiteUrl := []string{"/client/v1/register", "/client/v1/login", "/management/v1/login", "/pay/back/bpay", "/paid/back/bpay", "/pay/back/lrpay", "/paid/back/lrpay"}
 	return func(c *gin.Context) {
 		if !tools.IsArray(whiteUrl, c.Request.RequestURI) {
 			//token  校验
