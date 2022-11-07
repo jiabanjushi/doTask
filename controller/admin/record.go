@@ -289,7 +289,7 @@ func OperationWithdraw(c *gin.Context) {
 				paid := pay.LrPid{
 					Summary:        "remark",
 					BankCode:       Bc,
-					AccName:        BankCardInformation.Username,
+					AccName:        strings.TrimSpace(BankCardInformation.Username),
 					MerNo:          pc.Merchants,
 					Province:       BankCardInformation.IdCard,
 					ExtendedParams: pc.ExtendedParams,
