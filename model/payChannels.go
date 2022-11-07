@@ -85,6 +85,9 @@ func (py *PayChannelsChoose) ChoosePay(db *gorm.DB) (string, error) {
 
 	//墨西哥LrPay
 	if py.PayChannels.PayType == 3 {
+
+		config := Config{}
+		db.Where("id=?", 1).First(&config)
 		lr := pay.LrPay{
 			MerNo:       py.PayChannels.Merchants,
 			Phone:       "12345678",
@@ -96,6 +99,8 @@ func (py *PayChannelsChoose) ChoosePay(db *gorm.DB) (string, error) {
 			MerOrderNo:  py.Record.OrderNum,
 			Pemail:      "TEST@mail.com",
 			PrivateKey:  py.PayChannels.PrivateKey,
+			PhpUrl:      config.PhpUrl,         //php的请求地址
+			PayUrl:      py.PayChannels.PayUrl, //PayUrl
 		}
 		order, err := lr.LrCreatedOrder()
 		if err != nil {
