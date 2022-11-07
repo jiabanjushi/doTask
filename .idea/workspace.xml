@@ -6,7 +6,7 @@
   <component name="ChangeListManager">
     <list default="true" id="5db17068-649c-4ee3-81c5-a563fb5e293a" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pay/lrpay.go" beforeDir="false" afterPath="$PROJECT_DIR$/pay/lrpay.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/controller/admin/record.go" beforeDir="false" afterPath="$PROJECT_DIR$/controller/admin/record.go" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

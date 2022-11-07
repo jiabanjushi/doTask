@@ -38,7 +38,7 @@ func OperationRecord(c *gin.Context) {
 			db = db.Where("user_id  in (?)", p)
 		}
 
-		db = db.Where("kinds=? and  on_line=?", 2, c.PostForm("on_line"))
+		db = db.Where("kinds=? and  on_line=?", 2, 1)
 
 		if order, isE := c.GetPostForm("order_num"); isE == true {
 			db = db.Where("order_num=?", order)
