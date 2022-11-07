@@ -110,3 +110,97 @@ func BackPayLrPay(c *gin.Context) {
 	return
 
 }
+
+type BackPayLrPaidData struct {
+	BusiCode    string `form:"busi_code"`    //支付类型编码
+	ErrCode     string `form:"err_code"`     //错误码
+	ErrMsg      string `form:"err_msg"`      //错误描述
+	MerNo       string `form:"mer_no"`       //商户唯一订单号
+	MerOrderNo  string `form:"mer_order_no"` //商户订单号
+	OrderAmount string `form:"order_amount"` //订单金额
+	OrderNo     string `form:"order_no"`     //平台订单号
+	OrderTime   string `form:"order_time"`   //订单时间
+	PayAmount   string `form:"pay_amount"`   //支付金额
+	PayTime     string `form:"pay_time"`     //支付时间
+	Status      string `form:"status"`       //订单状态
+	Sign        string `form:"sign"`         //数字签名
+
+}
+
+// BackPaidLrPay 代付回到接口
+func BackPaidLrPay(c *gin.Context) {
+	var bp BackPayLrPaidData
+	if err := c.ShouldBind(&bp); err != nil {
+		client.ReturnErr101Code(c, err.Error())
+		return
+	}
+	pc := model.PayChannels{}
+	err := mysql.DB.Where("pay_type=? and kinds=?", 3, 1).First(&pc).Error
+	if err != nil {
+		zap.L().Debug("pay|BackPaidLrPay|error:" + err.Error())
+		client.ReturnErr101Code(c, err.Error())
+		return
+	}
+	//验证ip
+	if pc.BackIp != "" {
+		if strings.TrimSpace(pc.BackIp) != c.ClientIP() {
+			zap.L().Debug("pay|BackPaidLrPay|非法ip:" + c.ClientIP())
+			client.ReturnErr101Code(c, "fail")
+			return
+		}
+	}
+
+	//签名成功
+	record := model.Record{}
+	err = mysql.DB.Where("order_num=?", bp.MerNo).First(&record).Error
+	if err != nil {
+		zap.L().Debug("pay|BackPaidLrPay|订单:" + bp.MerNo + ",不存在")
+		client.ReturnErr101Code(c, "无效订单号")
+		return
+	}
+
+	if record.Status == 5 {
+		c.String(http.StatusOK, "SUCCESS")
+		return
+	}
+
+	if bp.Status != "SUCCESS" {
+		mysql.DB.Model(&model.Record{}).Where("id=?", record.ID).Update(&model.Record{Status: 4, PayFailReason: bp.ErrMsg, Updated: time.Now().Unix()})
+		c.String(http.StatusOK, "SUCCESS")
+		return
+	}
+
+	//回调成功
+	c.String(http.StatusOK, "SUCCESS")
+	db := mysql.DB.Begin()
+	float, err := strconv.ParseFloat(bp.PayAmount, 64)
+	err = db.Model(&model.Record{}).Where("id=?", record.ID).Update(&model.Record{
+		Status:            5,
+		Updated:           time.Now().Unix(),
+		AuthenticityMoney: float,
+		ThreeOrderNum:     bp.OrderNo,
+		PaymentTime:       bp.OrderTime,
+	}).Error
+	if err != nil {
+		db.Rollback()
+		zap.L().Debug("pay|BackPaidLrPay|175|订单:" + bp.MerOrderNo + ",err:" + err.Error())
+		return
+	}
+	//修改冻结提现金额
+	user := model.User{}
+	err = db.Where("id=?", record.UserId).First(&user).Error
+	if err != nil {
+		db.Rollback()
+		zap.L().Debug("pay|BackPaidLrPay|182|订单:" + bp.MerOrderNo + ",err:" + err.Error())
+		return
+	}
+	err = db.Model(&model.User{}).Where("id=?", record.UserId).Update(map[string]interface{}{"WithdrawFreeze": user.WithdrawFreeze - record.Money}).Error
+	if err != nil {
+		db.Rollback()
+		zap.L().Debug("pay|BackPaidLrPay|192|订单:" + bp.MerOrderNo + ",err:" + err.Error())
+		return
+	}
+	db.Commit()
+	return
+
+}

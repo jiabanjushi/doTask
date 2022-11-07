@@ -31,7 +31,7 @@ type PayChannels struct {
 	PayType        int    //1  USDT   2BPay(支付)
 	CountryCode    string //国际代码(BPay)
 	Goods          string
-	ExtendedParams string //代付的扩展参数
+	ExtendedParams string //代付的扩展参数      2是哥伦比亚
 	PayFast        string
 	PublicKey      string  `gorm:"type:text"`
 	PrivateKey     string  `gorm:"type:text"`

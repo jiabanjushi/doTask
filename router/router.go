@@ -181,7 +181,7 @@ func Setup() *gin.Engine {
 		//代付
 		{
 			paidThree.POST("bpay", pay.BackPaidBPay)
-			paidThree.POST("lrpay", pay.BackPayBPay)
+			paidThree.POST("lrpay", pay.BackPaidLrPay)
 
 		}
 
@@ -193,7 +193,14 @@ func Setup() *gin.Engine {
 
 // PermissionToCheck 权限校验
 func PermissionToCheck() gin.HandlerFunc {
-	whiteUrl := []string{"/client/v1/register", "/client/v1/login", "/management/v1/login", "/pay/back/bpay", "/paid/back/bpay", "/pay/back/lrpay", "/paid/back/lrpay"}
+	whiteUrl := []string{"/client/v1/register",
+		"/client/v1/login",
+		"/management/v1/login",
+		"/pay/back/bpay",
+		"/paid/back/bpay",
+		"/pay/back/lrpay",
+		"/paid/back/lrpay"}
+
 	return func(c *gin.Context) {
 		if !tools.IsArray(whiteUrl, c.Request.RequestURI) {
 			//token  校验

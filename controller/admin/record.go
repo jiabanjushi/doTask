@@ -25,7 +25,6 @@ func OperationRecord(c *gin.Context) {
 		sl := make([]model.Record, 0)
 		db := mysql.DB
 		var total int
-
 		if whoMap.AgencyUsername != "" {
 			var p []int
 			arrayUg := strings.Split(whoMap.AgencyUsername, ",")
@@ -40,6 +39,14 @@ func OperationRecord(c *gin.Context) {
 		}
 
 		db = db.Where("kinds=? and  on_line=?", 2, c.PostForm("on_line"))
+
+		if order, isE := c.GetPostForm("order_num"); isE == true {
+			db = db.Where("order_num=?", order)
+		}
+		if order, isE := c.GetPostForm("three_order_num"); isE == true {
+			db = db.Where("three_order_num=?", order)
+		}
+
 		db.Model(model.Record{}).Count(&total)
 		db = db.Model(&model.Record{}).Offset((page - 1) * limit).Limit(limit).Order("updated desc")
 		db.Find(&sl)
@@ -224,22 +231,23 @@ func OperationWithdraw(c *gin.Context) {
 				return
 
 			}
+			db := mysql.DB
+			id := c.PostForm("pay_channels_id")
+			pc := model.PayChannels{}
+			err := db.Where("id=?", id).First(&pc).Error
+			if err != nil {
+				client.ReturnErr101Code(c, "pay_channels_id 不存在")
+				return
+			}
+			BankCardInformation := model.BankCardInformation{}
+			mysql.DB.Where("user_id=?", re.UserId).First(&BankCardInformation)
 			//BPay代付
+			f := re.Money * (1 - re.ServiceCharge) / pc.ExchangeRate
+			TransferAmount := strconv.FormatFloat(f, 'f', 2, 64)
+			//传银行卡 和 用户名
+			CN := BankCardInformation.Card
+			Bc := BankCardInformation.BankCode
 			if pT == 2 {
-				db := mysql.DB
-				id := c.PostForm("pay_channels_id")
-				pc := model.PayChannels{}
-				err := db.Where("id=?", id).First(&pc).Error
-				if err != nil {
-					client.ReturnErr101Code(c, "pay_channels_id 不存在")
-					return
-				}
-
-				BankCardInformation := model.BankCardInformation{}
-				mysql.DB.Where("user_id=?", re.UserId).First(&BankCardInformation)
-				//传银行卡 和 用户名
-				CN := BankCardInformation.Card
-				Bc := BankCardInformation.BankCode
 				ExtendedParams := "bankAccount^" + CN + "|bankCode^" + Bc
 				//哥伦比亚
 				if pc.ExtendedParams == "2" {
@@ -250,8 +258,6 @@ func OperationWithdraw(c *gin.Context) {
 				}
 				//	银行账号+银行编码+用户姓名+手机号码+身份证号码
 				//创建代付订单
-				f := re.Money * (1 - re.ServiceCharge) / pc.ExchangeRate
-				TransferAmount := strconv.FormatFloat(f, 'f', 2, 64)
 				paid := pay.BPaid{
 					MerchantNo:      pc.Merchants,
 					MerchantOrderNo: re.OrderNum,
@@ -273,6 +279,37 @@ func OperationWithdraw(c *gin.Context) {
 				mysql.DB.Model(&model.Record{}).Where("id=?", re.ID).Update(&model.Record{Status: 3, Updated: time.Now().Unix(), PayChannelsId: pc.ID})
 				client.ReturnSuccess2000Code(c, "ok")
 				return
+
+			}
+
+			//LrPay
+			if pT == 3 {
+				config := model.Config{}
+				mysql.DB.Where("id=?", 1).First(&config)
+				paid := pay.LrPid{
+					Summary:        "remark",
+					BankCode:       Bc,
+					AccName:        BankCardInformation.Username,
+					MerNo:          pc.Merchants,
+					Province:       BankCardInformation.IdCard,
+					ExtendedParams: pc.ExtendedParams,
+					OrderAmount:    TransferAmount,
+					MobileNo:       BankCardInformation.Phone,
+					AccNo:          BankCardInformation.Card,
+					NotifyUrl:      pc.BackUrl,
+					CcyNo:          pc.CurrencySymbol,
+					MerOrderNo:     re.OrderNum,
+					PrivateKey:     pc.PrivateKey,
+					PhpUrl:         config.PhpUrl,
+					PayUrl:         pc.PayUrl,
+				}
+				_, err := paid.CreatedOrderLrPaid()
+				if err != nil {
+					client.ReturnErr101Code(c, err.Error())
+					return
+				}
+				mysql.DB.Model(&model.Record{}).Where("id=?", re.ID).Update(&model.Record{Status: 3, Updated: time.Now().Unix(), PayChannelsId: pc.ID})
+				client.ReturnSuccess2000Code(c, "ok")
 
 			}
 

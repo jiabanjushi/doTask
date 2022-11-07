@@ -248,8 +248,12 @@ func OperationTaskOder(c *gin.Context) {
 				mysql.DB.Where("username=?", overlayId).First(&user)
 				db = db.Where("uid=?", user.ID)
 			}
-
 		}
+
+		if overlayId, isExist := c.GetPostForm("status"); isExist == true {
+			db = db.Where("status=?", overlayId)
+		}
+
 		db.Model(model.TaskOrder{}).Count(&total)
 		db = db.Model(&model.TaskOrder{}).Offset((page - 1) * limit).Limit(limit).Order("created asc")
 		db.Find(&sl)
