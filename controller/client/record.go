@@ -1,7 +1,6 @@
 package client
 
 import (
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/wangyi/GinTemplate/dao/mysql"
 	"github.com/wangyi/GinTemplate/model"
@@ -98,10 +97,8 @@ func Recharge(c *gin.Context) {
 		//
 
 		choose := model.PayChannelsChoose{Record: r, PayChannels: pc}
-		pay, err := choose.ChoosePay(db)
-		fmt.Println("错误信息")
-		fmt.Println(err)
-		if err != nil {
+		pay, _ := choose.ChoosePay(db)
+		if pay == "" {
 			db.Rollback()
 			ReturnErr101Code(c, map[string]interface{}{"identification": "PayFail", "msg": PayFail})
 			return
