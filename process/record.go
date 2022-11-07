@@ -30,7 +30,8 @@ func RechargeTimeout(db *gorm.DB) {
 				db.Model(&model.Record{}).Where("id=?", taskOrder.ID).Update(&model.TaskOrder{Status: 4})
 
 			}
-			time.Sleep(600 * time.Second)
+
 		}
+		time.Sleep(600 * time.Second)
 	}
 }
