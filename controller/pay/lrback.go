@@ -31,7 +31,7 @@ type BackPayLrPayData struct {
 // BackPayLrPay lr 支付回调接口
 func BackPayLrPay(c *gin.Context) {
 	var bp BackPayLrPayData
-	if err := c.BindJSON(&bp); err != nil {
+	if err := c.ShouldBind(&bp); err != nil {
 		client.ReturnSuccess2000Code(c, err.Error())
 		return
 	}
