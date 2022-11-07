@@ -37,7 +37,7 @@ func BackPayBPay(c *gin.Context) {
 	}
 	//Bpay
 	pc := model.PayChannels{}
-	err := mysql.DB.Where("pay_type=?", 2).First(&pc).Error
+	err := mysql.DB.Where("pay_type=? and kinds=?", 2, 1).First(&pc).Error
 	if err != nil {
 		zap.L().Debug("pay|BackPayBPay|error:" + err.Error())
 		client.ReturnSuccess2000Code(c, err.Error())
@@ -57,7 +57,6 @@ func BackPayBPay(c *gin.Context) {
 
 	//检验成功
 	//查询订单
-
 	if bp.PaymentStatus != "SUCCESS" {
 		client.ReturnSuccess2000Code(c, "不接收失败的订单")
 		return

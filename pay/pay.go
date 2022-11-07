@@ -1,5 +1,7 @@
 package pay
 
+//备注下  Bpay
+
 import (
 	"encoding/json"
 	"github.com/jinzhu/gorm"
@@ -49,7 +51,7 @@ type ReturnData struct {
 
 func (b *BPay) CreatedOrder(db *gorm.DB) (string, error) {
 	str := "countryCode=" + b.CountryCode + "&currencyCode=" + b.CurrencyCode + "&goods=" + b.Goods + "&merchantNo=" + b.MerchantNo + "&merchantOrderNo=" + b.MerchantOrderNo + "&notifyUrl=" + b.NotifyUrl + "&paymentAmount=" + b.PaymentAmount + "&paymentType=" + b.PaymentType
-	zap.L().Debug("pay|CreatedOrder|加密字符串:" + str)
+	zap.L().Debug("pay|Create.dOrder|加密字符串:" + str)
 	sign, err := RsaSign(str, b.PrivateKey)
 	if err != nil {
 		logger.SystemLogger("pay", "CreatedOrder", err.Error(), 37)

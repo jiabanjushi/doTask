@@ -18,6 +18,7 @@ type Config struct {
 	TaskTimeout         int64  `gorm:"default:5400"`
 	WebsiteH5           string //前段H5  域名
 	SystemCurrency      string `gorm:"default:'$MEX'"` //系统货币符号
+	PhpUrl              string //php加密地址
 }
 
 // CheckIsExistModelConfig   创建Config
