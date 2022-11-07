@@ -146,7 +146,6 @@ func (lr *LrPid) CreatedOrderLrPaid() (bool, error) {
 	newData["bank_code"] = lr.BankCode
 	newData["acc_name"] = lr.AccName
 	newData["mer_no"] = lr.MerNo
-	newData["province"] = lr.Province
 	newData["order_amount"] = lr.OrderAmount
 	newData["mobile_no"] = lr.MobileNo
 	newData["acc_no"] = lr.AccNo
