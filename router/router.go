@@ -171,7 +171,7 @@ func Setup() *gin.Engine {
 		{
 			//Bpay
 			payThree.POST("bpay", pay.BackPayBPay)
-			payThree.POST("lrpay", pay.BackPayBPay)
+			payThree.POST("lrpay", pay.BackPayLrPay)
 
 		}
 

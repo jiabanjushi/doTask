@@ -13,18 +13,18 @@ import (
 )
 
 type BackPayLrPayData struct {
-	BusiCode    string `json:"busi_code"`    //支付类型编码
-	ErrCode     string `json:"err_code"`     //错误码
-	ErrMsg      string `json:"err_msg"`      //错误描述
-	MerNo       string `json:"mer_no"`       //商户唯一订单号
-	MerOrderNo  string `json:"mer_order_no"` //商户订单号
-	OrderAmount string `json:"order_amount"` //订单金额
-	OrderNo     string `json:"order_no"`     //平台订单号
-	OrderTime   string `json:"order_time"`   //订单时间
-	PayAmount   string `json:"pay_amount"`   //支付金额
-	PayTime     string `json:"pay_time"`     //支付时间
-	Status      string `json:"status"`       //订单状态
-	Sign        string `json:"sign"`         //数字签名
+	BusiCode    string `form:"busi_code"`    //支付类型编码
+	ErrCode     string `form:"err_code"`     //错误码
+	ErrMsg      string `form:"err_msg"`      //错误描述
+	MerNo       string `form:"mer_no"`       //商户唯一订单号
+	MerOrderNo  string `form:"mer_order_no"` //商户订单号
+	OrderAmount string `form:"order_amount"` //订单金额
+	OrderNo     string `form:"order_no"`     //平台订单号
+	OrderTime   string `form:"order_time"`   //订单时间
+	PayAmount   string `form:"pay_amount"`   //支付金额
+	PayTime     string `form:"pay_time"`     //支付时间
+	Status      string `form:"status"`       //订单状态
+	Sign        string `form:"sign"`         //数字签名
 
 }
 
@@ -32,7 +32,7 @@ type BackPayLrPayData struct {
 func BackPayLrPay(c *gin.Context) {
 	var bp BackPayLrPayData
 	if err := c.ShouldBind(&bp); err != nil {
-		client.ReturnSuccess2000Code(c, err.Error())
+		client.ReturnErr101Code(c, err.Error())
 		return
 	}
 
@@ -40,21 +40,21 @@ func BackPayLrPay(c *gin.Context) {
 	err := mysql.DB.Where("pay_type=? and kinds=?", 3, 1).First(&pc).Error
 	if err != nil {
 		zap.L().Debug("pay|BackPayLrPay|error:" + err.Error())
-		client.ReturnSuccess2000Code(c, err.Error())
+		client.ReturnErr101Code(c, err.Error())
 		return
 	}
 	//验证ip
 	if pc.BackIp != "" {
 		if strings.TrimSpace(pc.BackIp) != c.ClientIP() {
 			zap.L().Debug("pay|BackPayLrPay|非法ip:" + c.ClientIP())
-			client.ReturnSuccess2000Code(c, "fail")
+			client.ReturnErr101Code(c, "fail")
 			return
 		}
 	}
 
 	if bp.Status != "SUCCESS" {
 		zap.L().Debug("pay|BackPayLrPay|错误描述" + bp.ErrMsg)
-		client.ReturnSuccess2000Code(c, "不接收失败的订单")
+		client.ReturnErr101Code(c, "不接收失败的订单")
 		return
 	}
 

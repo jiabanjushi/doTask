@@ -32,7 +32,7 @@ type BackPay struct {
 func BackPayBPay(c *gin.Context) {
 	var bp BackPay
 	if err := c.BindJSON(&bp); err != nil {
-		client.ReturnSuccess2000Code(c, err.Error())
+		client.ReturnErr101Code(c, err.Error())
 		return
 	}
 	//Bpay
@@ -40,8 +40,7 @@ func BackPayBPay(c *gin.Context) {
 	err := mysql.DB.Where("pay_type=? and kinds=?", 2, 1).First(&pc).Error
 	if err != nil {
 		zap.L().Debug("pay|BackPayBPay|error:" + err.Error())
-		client.ReturnSuccess2000Code(c, err.Error())
-
+		client.ReturnErr101Code(c, err.Error())
 		return
 	}
 
@@ -51,14 +50,14 @@ func BackPayBPay(c *gin.Context) {
 	_, err = pay.VerifyRsaSign(signStr, bp.Sign, pc.PublicKey)
 	if err != nil {
 		zap.L().Debug("pay|BackPayBPay|校验签名失败哦:" + err.Error())
-		client.ReturnSuccess2000Code(c, err.Error())
+		client.ReturnErr101Code(c, err.Error())
 		return
 	}
 
 	//检验成功
 	//查询订单
 	if bp.PaymentStatus != "SUCCESS" {
-		client.ReturnSuccess2000Code(c, "不接收失败的订单")
+		client.ReturnErr101Code(c, "不接收失败的订单")
 		return
 	}
 
