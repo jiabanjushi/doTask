@@ -83,5 +83,26 @@ func (py *PayChannelsChoose) ChoosePay(db *gorm.DB) (string, error) {
 		return order, nil
 	}
 
+	//墨西哥LrPay
+	if py.PayChannels.PayType == 3 {
+		lr := pay.LrPay{
+			MerNo:       py.PayChannels.Merchants,
+			Phone:       "12345678",
+			Pname:       "jack",
+			OrderAmount: strconv.FormatFloat(py.Record.Money, 'f', 2, 64),
+			NotifyUrl:   py.PayChannels.PayUrl,
+			CcyNo:       py.PayChannels.CurrencySymbol,
+			BusiCode:    py.PayChannels.PayCode,
+			MerOrderNo:  py.Record.OrderNum,
+			Pemail:      "TEST@mail.com",
+			PrivateKey:  py.PayChannels.PrivateKey,
+		}
+		order, err := lr.LrCreatedOrder()
+		if err != nil {
+			return "", err
+		}
+		return order, nil
+	}
+
 	return "", eeor.OtherError("There is no matching PayType ")
 }
