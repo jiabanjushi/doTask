@@ -2,6 +2,7 @@ package pay
 
 import (
 	"encoding/json"
+	eeor "github.com/wangyi/GinTemplate/error"
 	"go.uber.org/zap"
 )
 
@@ -176,7 +177,7 @@ func (lr *LrPid) CreatedOrderLrPaid() (bool, error) {
 
 	if lrReturn.Status != "SUCCESS" {
 		zap.L().Debug("pay|LrCreatedOrder|6|错误信息:" + lrReturn.ErrMsg)
-		return false, err
+		return false, eeor.OtherError(lrReturn.ErrMsg)
 	}
 
 	//代付成功
