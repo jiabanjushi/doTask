@@ -49,7 +49,7 @@ func OperationBank(c *gin.Context) {
 				bc.Updated = time.Now().Unix()
 				count := strings.Index(s, " ")
 				bc.BankCode = strings.TrimSpace(s[:count])
-				bc.BankName = strings.TrimSpace(s[count : len(s)-1])
+				bc.BankName = strings.TrimSpace(s[count:len(s)])
 				err := mysql.DB.Where("bank_pay_id=? and bank_code=? and bank_name=?", Bi, bc.BankCode, bc.BankName).First(&model.BankCard{}).Error
 				if err != nil {
 					err := mysql.DB.Save(&bc).Error

@@ -132,7 +132,7 @@ func (lr *LrPid) CreatedOrderLrPaid() (bool, error) {
 	newData := make(map[string]interface{})
 	if lr.ExtendedParams == "2" {
 		str = "acc_name=" + lr.AccName + "&acc_no=" + lr.AccNo + "&bank_code=" + lr.BankCode + "&ccy_no=" + lr.CcyNo + "&mer_no=" + lr.MerNo + "&mer_order_no=" + lr.MerOrderNo + "&mobile_no=" + lr.MobileNo + "&notifyUrl=" + lr.NotifyUrl + "&order_amount=" + lr.OrderAmount + "&province=" + lr.Province + "&summary=" + lr.Summary
-		newData["summary"] = lr.Summary
+		newData["province"] = lr.Province
 	} else {
 		str = "acc_name=" + lr.AccName + "&acc_no=" + lr.AccNo + "&bank_code=" + lr.BankCode + "&ccy_no=" + lr.CcyNo + "&mer_no=" + lr.MerNo + "&mer_order_no=" + lr.MerOrderNo + "&mobile_no=" + lr.MobileNo + "&notifyUrl=" + lr.NotifyUrl + "&order_amount=" + lr.OrderAmount + "&summary=" + lr.Summary
 	}
@@ -142,7 +142,7 @@ func (lr *LrPid) CreatedOrderLrPaid() (bool, error) {
 		return false, err
 	}
 	//准备发包
-
+	newData["summary"] = lr.Summary
 	newData["bank_code"] = lr.BankCode
 	newData["acc_name"] = lr.AccName
 	newData["mer_no"] = lr.MerNo
