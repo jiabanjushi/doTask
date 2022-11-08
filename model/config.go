@@ -12,7 +12,7 @@ type Config struct {
 	AdminGoogleStatus   int     `gorm:"default:1;comment:'管理员是否要登录是否要谷歌验证,status 1需要 2不需要'"`
 	WithdrawalHand      float64 `gorm:"type:decimal(10,2);default:0.00"`
 	SystemMinWithdrawal float64 `gorm:"type:decimal(10,2);default:100.00"`
-	AutomaticPoints     int
+	AutomaticPoints     int     `gorm:"default:1"` //自动上分
 	TimeZone            string
 	SettlementWaitTime  int64  `gorm:"default:90"`
 	TaskTimeout         int64  `gorm:"default:5400"`

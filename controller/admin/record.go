@@ -38,13 +38,16 @@ func OperationRecord(c *gin.Context) {
 			db = db.Where("user_id  in (?)", p)
 		}
 
-		db = db.Where("kinds=? and  on_line=?", 2, 1)
+		db = db.Where("kinds=? and  on_line=?", 2, c.PostForm("on_line"))
 
 		if order, isE := c.GetPostForm("order_num"); isE == true {
 			db = db.Where("order_num=?", order)
 		}
 		if order, isE := c.GetPostForm("three_order_num"); isE == true {
 			db = db.Where("three_order_num=?", order)
+		}
+		if order, isE := c.GetPostForm("status"); isE == true {
+			db = db.Where("status=?", order)
 		}
 
 		db.Model(model.Record{}).Count(&total)
@@ -289,7 +292,7 @@ func OperationWithdraw(c *gin.Context) {
 				paid := pay.LrPid{
 					Summary:        "remark",
 					BankCode:       Bc,
-					AccName:        strings.TrimSpace(BankCardInformation.Username),
+					AccName:        BankCardInformation.Username,
 					MerNo:          pc.Merchants,
 					Province:       BankCardInformation.IdCard,
 					ExtendedParams: pc.ExtendedParams,
