@@ -1,6 +1,7 @@
 package client
 
 import (
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/wangyi/GinTemplate/dao/mmdb"
 	"github.com/wangyi/GinTemplate/dao/mysql"
@@ -33,6 +34,17 @@ func Register(c *gin.Context) {
 		ReturnErr101Code(c, map[string]interface{}{"identification": "already", "msg": RegisterErr02})
 		return
 	}
+	//判断手机号是否有人使用
+	if phone, ise := c.GetPostForm("phone"); ise == true {
+		err := mysql.DB.Where("phone=?", phone).First(&model.User{}).Error
+		fmt.Println("手机号检查")
+		fmt.Println(err)
+		if err == nil {
+			ReturnErr101Code(c, map[string]interface{}{"identification": "PhoneIsRegistered", "msg": PhoneIsRegistered})
+			return
+		}
+	}
+
 	//生成用户的token
 	q1, q2 := CreateUserToken(mysql.DB)
 	if q2 == false {

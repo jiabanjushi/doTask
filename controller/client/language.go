@@ -6,6 +6,8 @@ var (
 	RegisterErr02   = "Sorry, the user name already exists"                              //already
 	RegisterErr03   = "Sorry, registration failed, system error, please try again later" //registration
 	RegisterSuccess = "Congratulations, you have registered successfully"                //congratulations
+
+	PhoneIsRegistered = "The cell phone number has been registered"
 )
 
 //登录返回信息

@@ -63,6 +63,10 @@ func SetBank(c *gin.Context) {
 			Username: username,
 		}
 
+		if idCard, isE := c.GetPostForm("id_card"); isE == true {
+			save.IdCard = idCard
+		}
+
 		if err1 != nil {
 			//新增
 			save.Created = time.Now().Unix()
