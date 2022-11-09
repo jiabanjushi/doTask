@@ -65,4 +65,12 @@ func OperationFirstPage(c *gin.Context) {
 		ReturnDataLIst2000(c, sl, total)
 
 	}
+
+	if action == "update" {
+		sta := model.Statistics{Date: c.PostForm("date")}
+		sta.UpdatedTodayData(mysql.DB)
+		client.ReturnSuccess2000Code(c, "执行成功")
+		return
+	}
+
 }

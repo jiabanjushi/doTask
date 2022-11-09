@@ -98,7 +98,7 @@ func BackPayLrPay(c *gin.Context) {
 		PayChannelsExchangeRate: pc.ExchangeRate,
 		AuthenticityMoney:       AuthenticityMoney,
 		OrderNo:                 bp.OrderNo,
-		PaymentTime:             bp.PayAmount,
+		PaymentTime:             bp.PayTime,
 	}
 	_, err = change.UserBalanceChangeFunc(mysql.DB)
 	if err != nil {

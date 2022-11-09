@@ -115,7 +115,10 @@ func run(cmd *cobra.Command, args []string) {
 	go process.OrderTimeout(mysql.DB)
 	//充值订单超时检查
 	go process.RechargeTimeout(mysql.DB)
-
+	//定时更新 每日日数据
+	go process.UpdateStatistics(mysql.DB)
+	//每日任务
+	go process.TimeTask(mysql.DB)
 	router.Setup()
 }
 

@@ -12,6 +12,7 @@ require (
 	github.com/onsi/ginkgo v1.16.5 // indirect
 	github.com/onsi/gomega v1.19.0 // indirect
 	github.com/oschwald/maxminddb-golang v1.10.0
+	github.com/robfig/cron v1.2.0 // indirect
 	github.com/spf13/cobra v1.4.0
 	github.com/spf13/viper v1.11.0
 	github.com/zh-five/xdaemon v0.1.1
