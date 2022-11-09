@@ -20,8 +20,8 @@ import (
 
 // User 用户
 type User struct {
-	ID               int `gorm:"primaryKey"`
-	Username         string
+	ID               int    `gorm:"primaryKey"`
+	Username         string `gorm:"unique_index"`
 	Password         string
 	Token            string
 	InvitationCode   string
