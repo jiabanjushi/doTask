@@ -6,11 +6,8 @@
   <component name="ChangeListManager">
     <list default="true" id="5db17068-649c-4ee3-81c5-a563fb5e293a" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmd/server.go" beforeDir="false" afterPath="$PROJECT_DIR$/cmd/server.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/controller/admin/statistics.go" beforeDir="false" afterPath="$PROJECT_DIR$/controller/admin/statistics.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/controller/pay/lrback.go" beforeDir="false" afterPath="$PROJECT_DIR$/controller/pay/lrback.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/model/statistics.go" beforeDir="false" afterPath="$PROJECT_DIR$/model/statistics.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/process/record.go" beforeDir="false" afterPath="$PROJECT_DIR$/process/record.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/controller/admin/payChannels.go" beforeDir="false" afterPath="$PROJECT_DIR$/controller/admin/payChannels.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/controller/admin/user.go" beforeDir="false" afterPath="$PROJECT_DIR$/controller/admin/user.go" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

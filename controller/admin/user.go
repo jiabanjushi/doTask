@@ -148,7 +148,7 @@ func OperationUser(c *gin.Context) {
 			}
 			money := c.PostForm("money")
 			float, _ := strconv.ParseFloat(money, 64)
-			parseFloat, _ := strconv.Atoi(c.PostForm("kind"))
+			parseFloat, _ := strconv.Atoi(c.PostForm("kinds"))
 			change := model.UserBalanceChange{UserId: user.ID, ChangeMoney: float, Kinds: 3, RecordKind: parseFloat}
 			_, err = change.UserBalanceChangeFunc(mysql.DB)
 			if err != nil {

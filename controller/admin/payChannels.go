@@ -101,6 +101,18 @@ func OperationPayChannels(c *gin.Context) {
 			client.ReturnSuccess2000Code(c, "OK")
 			return
 		}
+
+		if status, isE := c.GetPostForm("maintenance"); isE == true {
+			ST, _ := strconv.Atoi(status)
+			err := mysql.DB.Model(&model.PayChannels{}).Where("id=?", id).Update(&model.PayChannels{Updated: time.Now().Unix(), Maintenance: ST}).Error
+			if err != nil {
+				client.ReturnErr101Code(c, err.Error())
+				return
+			}
+			client.ReturnSuccess2000Code(c, "OK")
+			return
+		}
+
 		pc := model.PayChannels{}
 		pc.Updated = time.Now().Unix()
 		pc.Maintenance = 1
@@ -116,7 +128,7 @@ func OperationPayChannels(c *gin.Context) {
 		pc.PayUrl = strings.TrimSpace(c.PostForm("pay_url"))
 		pc.Name = c.PostForm("name")
 		pc.PayType, _ = strconv.Atoi(c.PostForm("pay_type"))
-		pc.Maintenance, _ = strconv.Atoi(c.PostForm("maintenance"))
+		//pc.Maintenance, _ = strconv.Atoi(c.PostForm("maintenance"))
 		pc.ExchangeRate, _ = strconv.ParseFloat(c.PostForm("exchange_rate"), 64)
 		pc.CountryCode = c.PostForm("country_code")
 		pc.PrivateKey = c.PostForm("private_key")
