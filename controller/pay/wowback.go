@@ -5,6 +5,7 @@ import (
 	"github.com/wangyi/GinTemplate/controller/client"
 	"github.com/wangyi/GinTemplate/dao/mysql"
 	"github.com/wangyi/GinTemplate/model"
+	"github.com/wangyi/GinTemplate/pay"
 	"go.uber.org/zap"
 	"net/http"
 	"strconv"
@@ -41,12 +42,21 @@ func BackPayWowPay(c *gin.Context) {
 		return
 	}
 	//签名验证
-	//str := "tradeResult=" + bw.TradeResult + "&oriAmount=" + bw.OriAmount + "&amount=" + bw.Amount + "&mchId=" + bw.MchId + "&orderNo=" + bw.OrderNo + "&mchOrderNo=" + bw.MchOrderNo + "&orderDate=" + bw.OrderDate + "&key=" + pc.Key
-	//if pay.MD5(str) != bw.Sign {
-	//	zap.L().Debug("pay|CreatedPaidOrder|2|err:签名验证失败")
-	//	client.ReturnErr101Code(c, "签名验证失败")
-	//	return
-	//}
+
+	params := map[string]string{
+		"tradeResult": bw.TradeResult,
+		"mchId":       bw.MchId,
+		"mchOrderNo":  bw.MchOrderNo,
+		"oriAmount":   bw.OriAmount,
+		"amount":      bw.Amount,
+		"orderDate":   bw.OrderDate,
+		"orderNo":     bw.OrderNo,
+	}
+	if pay.MD5(SortString(params)+"&key="+pc.Key) != bw.Sign {
+		zap.L().Debug("pay|CreatedPaidOrder|2|err:签名验证失败")
+		client.ReturnErr101Code(c, "签名验证失败")
+		return
+	}
 
 	//验证ip
 	if pc.BackIp != "" {
@@ -125,8 +135,9 @@ type BackPayWowPaidData struct {
 	ApplyDate      string `json:"applyDate"`      // 订单时间  String  Y  订单时间
 	Version        string `json:"version"`        //  版本号  String  Y  默认1.0
 	RespCode       string `json:"respCode"`       //   回调状态  String  Y  默认SUCCESS
-	Sign           string `json:"sign"`           //   签名  String  N  不参与签名
-	SignType       string `json:"signType"`       //  签名方式  String  N  MD5 不参与签名
+
+	Sign     string `json:"sign"`     //   签名  String  N  不参与签名
+	SignType string `json:"signType"` //  签名方式  String  N  MD5 不参与签名
 }
 
 // BackPayWowPaid 代付回调
@@ -151,13 +162,23 @@ func BackPayWowPaid(c *gin.Context) {
 			return
 		}
 	}
+
+	param := map[string]string{
+		"tradeResult":    bp.TradeResult,
+		"merTransferId":  bp.MerTransferId,
+		"merNo":          bp.MerNo,
+		"tradeNo":        bp.TradeNo,
+		"transferAmount": bp.TransferAmount,
+		"applyDate":      bp.ApplyDate,
+		"version":        bp.Version,
+		"respCode":       bp.RespCode,
+	}
 	//签名验证
-	//str := "tradeResult=" + bp.TradeResult + "&merTransferId=" + bp.MerTransferId + "&merNo=" + bp.MerNo + "&tradeNo=" + bp.TradeNo + "&transferAmount=" + bp.TransferAmount + "&sign=0f919e357c71c7013665e253cf1d4be7&signType=MD5&applyDate=2020-12-0111:33:59&version=1.0&respCode=SUCCESS"
-	//if pay.MD5(str) != bw.Sign {
-	//	zap.L().Debug("pay|CreatedPaidOrder|2|err:签名验证失败")
-	//	client.ReturnErr101Code(c, "签名验证失败")
-	//	return
-	//}
+	if pay.MD5(SortString(param)+"&key="+pc.Key) != bp.Sign {
+		zap.L().Debug("pay|CreatedPaidOrder|2|err:签名验证失败")
+		client.ReturnErr101Code(c, "签名验证失败")
+		return
+	}
 
 	record := model.Record{}
 	err = mysql.DB.Where("order_num=?", bp.MerNo).First(&record).Error

@@ -128,8 +128,6 @@ func OperationWithdraw(c *gin.Context) {
 	if action == "select" {
 
 		operation := c.PostForm("operation")
-
-		fmt.Println(operation == "getPaidChannels")
 		if operation == "getPaidChannels" {
 			BC := make([]model.BankCard, 0)
 			mysql.DB.Where("bank_name=?", c.PostForm("bank_name")).Find(&BC)
@@ -137,21 +135,23 @@ func OperationWithdraw(c *gin.Context) {
 			fmt.Println(BC)
 			//rD = append(rD, map[string]interface{}{"id": cc.ID, "pay_type":1 , "name": ""})
 			for _, i2 := range BC {
-				cc := model.PayChannels{}
-				err := mysql.DB.Where("bank_pay_id=?", i2.BankPayId).First(&cc).Error
-				if err == nil {
-					rD = append(rD, map[string]interface{}{"id": cc.ID, "pay_type": cc.PayType, "name": cc.Name})
+				cc := make([]model.PayChannels, 0)
+				mysql.DB.Where("bank_pay_id=?", i2.BankPayId).Find(&cc)
+				for _, channels := range cc {
+					rD = append(rD, map[string]interface{}{"id": channels.ID, "pay_type": channels.PayType, "name": channels.Name, "rate": channels.ExchangeRate})
 
 				}
+
 			}
 
 			//查询是否有本地代付
 			BC2 := make([]model.PayChannels, 0)
 			mysql.DB.Where("pay_type=?", 1).First(&BC2)
 			for _, card := range BC2 {
-				rD = append(rD, map[string]interface{}{"id": card.ID, "pay_type": card.PayType, "name": card.Name})
+				rD = append(rD, map[string]interface{}{"id": card.ID, "pay_type": card.PayType, "name": card.Name, "rate": card.ExchangeRate})
 			}
 
+			fmt.Println(rD)
 			client.ReturnSuccess2000DataCode(c, rD, "ok")
 			return
 		}
