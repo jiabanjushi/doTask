@@ -123,6 +123,7 @@ func (py *PayChannelsChoose) ChoosePay(db *gorm.DB) (string, error) {
 			OrderDate:   time.Now().Format("2006-01-02 15:04:05"),
 			GoodsName:   "goods",
 			SignType:    "MD5",
+			PayUrl:      py.PayChannels.PayUrl,
 		}
 		order, err := Wow.WowPayCreatedOrder()
 		if err != nil {
