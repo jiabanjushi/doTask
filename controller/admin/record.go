@@ -38,6 +38,15 @@ func OperationRecord(c *gin.Context) {
 			db = db.Where("user_id  in (?)", p)
 		}
 
+		if order, isE := c.GetPostForm("username"); isE == true {
+			usr := model.User{}
+			err := mysql.DB.Where("username=?", order).First(&usr).Error
+			if err == nil {
+				db = db.Where("user_id=?", usr.ID)
+			}
+
+		}
+
 		db = db.Where("kinds=? and  on_line=?", 2, c.PostForm("on_line"))
 
 		if order, isE := c.GetPostForm("order_num"); isE == true {
@@ -117,12 +126,41 @@ func OperationWithdraw(c *gin.Context) {
 	whoMap := who.(model.Admin)
 	ctName, _ := mmdb.GetCountryForIp(c.ClientIP())
 	if action == "select" {
+
+		operation := c.PostForm("operation")
+
+		fmt.Println(operation == "getPaidChannels")
+		if operation == "getPaidChannels" {
+			BC := make([]model.BankCard, 0)
+			mysql.DB.Where("bank_name=?", c.PostForm("bank_name")).Find(&BC)
+			rD := make([]map[string]interface{}, 0)
+			fmt.Println(BC)
+			//rD = append(rD, map[string]interface{}{"id": cc.ID, "pay_type":1 , "name": ""})
+			for _, i2 := range BC {
+				cc := model.PayChannels{}
+				err := mysql.DB.Where("bank_pay_id=?", i2.BankPayId).First(&cc).Error
+				if err == nil {
+					rD = append(rD, map[string]interface{}{"id": cc.ID, "pay_type": cc.PayType, "name": cc.Name})
+
+				}
+			}
+
+			//查询是否有本地代付
+			BC2 := make([]model.PayChannels, 0)
+			mysql.DB.Where("pay_type=?", 1).First(&BC2)
+			for _, card := range BC2 {
+				rD = append(rD, map[string]interface{}{"id": card.ID, "pay_type": card.PayType, "name": card.Name})
+			}
+
+			client.ReturnSuccess2000DataCode(c, rD, "ok")
+			return
+		}
+
 		limit, _ := strconv.Atoi(c.PostForm("limit"))
 		page, _ := strconv.Atoi(c.PostForm("page"))
 		sl := make([]model.Record, 0)
 		db := mysql.DB
 		var total int
-
 		if whoMap.AgencyUsername != "" {
 			var p []int
 			arrayUg := strings.Split(whoMap.AgencyUsername, ",")

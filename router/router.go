@@ -172,7 +172,7 @@ func Setup() *gin.Engine {
 			//Bpay
 			payThree.POST("bpay", pay.BackPayBPay)
 			payThree.POST("lrpay", pay.BackPayLrPay)
-
+			payThree.POST("wowpay", pay.BackPayWowPay)
 		}
 
 	}
@@ -182,6 +182,7 @@ func Setup() *gin.Engine {
 		{
 			paidThree.POST("bpay", pay.BackPaidBPay)
 			paidThree.POST("lrpay", pay.BackPaidLrPay)
+			paidThree.POST("wowpay", pay.BackPayLrPay)
 
 		}
 
@@ -199,7 +200,8 @@ func PermissionToCheck() gin.HandlerFunc {
 		"/pay/back/bpay",
 		"/paid/back/bpay",
 		"/pay/back/lrpay",
-		"/paid/back/lrpay"}
+		"/paid/back/lrpay", "/pay/back/wowpay",
+		"/paid/back/wowpay"}
 
 	return func(c *gin.Context) {
 		if !tools.IsArray(whiteUrl, c.Request.RequestURI) {

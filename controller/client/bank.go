@@ -18,15 +18,21 @@ func SetBank(c *gin.Context) {
 		mysql.DB.Where("status=?", 1).Find(&bp)
 
 		dataArray := make([]map[string]interface{}, 0)
+		var bankCarName []string
 		for _, pay := range bp {
 			bb := make([]model.BankCard, 0)
 			mysql.DB.Where("bank_pay_id=?", pay.ID).Find(&bb)
 			for _, card := range bb {
-				data := make(map[string]interface{})
-				data["id"] = card.ID
-				data["name"] = card.BankName
-				data["code"] = card.BankCode
-				dataArray = append(dataArray, data)
+				//判断是否重复
+				if tools.IsArray(bankCarName, card.BankName) == false {
+					data := make(map[string]interface{})
+					data["id"] = card.ID
+					data["name"] = card.BankName
+					data["code"] = card.BankCode
+					dataArray = append(dataArray, data)
+					bankCarName = append(bankCarName, card.BankName)
+				}
+
 			}
 		}
 
