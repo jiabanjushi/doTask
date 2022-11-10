@@ -5,7 +5,6 @@ import (
 	"github.com/wangyi/GinTemplate/controller/client"
 	"github.com/wangyi/GinTemplate/dao/mysql"
 	"github.com/wangyi/GinTemplate/model"
-	"github.com/wangyi/GinTemplate/pay"
 	"go.uber.org/zap"
 	"net/http"
 	"strconv"
@@ -33,13 +32,6 @@ func BackPayWowPay(c *gin.Context) {
 		client.ReturnErr101Code(c, err)
 		return
 	}
-	//签名验证
-	str := "tradeResult=" + bw.TradeResult + "&oriAmount=" + bw.OriAmount + "&amount=" + bw.Amount + "&mchId=" + bw.MchId + "&orderNo=" + bw.OrderNo + "&mchOrderNo=" + bw.MchOrderNo + "&orderDate=" + bw.OrderDate
-	if pay.MD5(str) != bw.Sign {
-		zap.L().Debug("pay|CreatedPaidOrder|2|err:签名验证失败")
-		client.ReturnErr101Code(c, "签名验证失败")
-		return
-	}
 
 	pc := model.PayChannels{}
 	err := mysql.DB.Where("pay_type=? and kinds=?", 4, 1).First(&pc).Error
@@ -48,6 +40,14 @@ func BackPayWowPay(c *gin.Context) {
 		client.ReturnErr101Code(c, err.Error())
 		return
 	}
+	//签名验证
+	//str := "tradeResult=" + bw.TradeResult + "&oriAmount=" + bw.OriAmount + "&amount=" + bw.Amount + "&mchId=" + bw.MchId + "&orderNo=" + bw.OrderNo + "&mchOrderNo=" + bw.MchOrderNo + "&orderDate=" + bw.OrderDate + "&key=" + pc.Key
+	//if pay.MD5(str) != bw.Sign {
+	//	zap.L().Debug("pay|CreatedPaidOrder|2|err:签名验证失败")
+	//	client.ReturnErr101Code(c, "签名验证失败")
+	//	return
+	//}
+
 	//验证ip
 	if pc.BackIp != "" {
 		if strings.TrimSpace(pc.BackIp) != c.ClientIP() {
@@ -112,6 +112,103 @@ func BackPayWowPay(c *gin.Context) {
 		return
 	}
 	c.String(http.StatusOK, "SUCCESS")
+	return
+
+}
+
+type BackPayWowPaidData struct {
+	TradeResult    string `json:"tradeResult"`    //订单状态     String  Y  1：代付成功；2：代付失败
+	MerTransferId  string `json:"merTransferId"`  // 商家转账单号  String  Y  代付使用的转账单号
+	MerNo          string `json:"merNo"`          //  商户代码  String  Y  平台分配唯一
+	TradeNo        string `json:"tradeNo"`        // 平台订单号  String  Y  平台唯一
+	TransferAmount string `json:"transferAmount"` //代付金额  String  Y  元为单位保留俩位小数
+	ApplyDate      string `json:"applyDate"`      // 订单时间  String  Y  订单时间
+	Version        string `json:"version"`        //  版本号  String  Y  默认1.0
+	RespCode       string `json:"respCode"`       //   回调状态  String  Y  默认SUCCESS
+	Sign           string `json:"sign"`           //   签名  String  N  不参与签名
+	SignType       string `json:"signType"`       //  签名方式  String  N  MD5 不参与签名
+}
+
+// BackPayWowPaid 代付回调
+func BackPayWowPaid(c *gin.Context) {
+	var bp BackPayWowPaidData
+	if err := c.ShouldBind(&bp); err != nil {
+		client.ReturnErr101Code(c, err.Error())
+		return
+	}
+	pc := model.PayChannels{}
+	err := mysql.DB.Where("pay_type=? and kinds=?", 4, 2).First(&pc).Error
+	if err != nil {
+		zap.L().Debug("pay|BackPayWowPaid|1|error:" + err.Error())
+		client.ReturnErr101Code(c, err.Error())
+		return
+	}
+	//验证ip
+	if pc.BackIp != "" {
+		if strings.TrimSpace(pc.BackIp) != c.ClientIP() {
+			zap.L().Debug("pay|BackPayWowPaid|1|非法ip:" + c.ClientIP())
+			client.ReturnErr101Code(c, "fail")
+			return
+		}
+	}
+	//签名验证
+	//str := "tradeResult=" + bp.TradeResult + "&merTransferId=" + bp.MerTransferId + "&merNo=" + bp.MerNo + "&tradeNo=" + bp.TradeNo + "&transferAmount=" + bp.TransferAmount + "&sign=0f919e357c71c7013665e253cf1d4be7&signType=MD5&applyDate=2020-12-0111:33:59&version=1.0&respCode=SUCCESS"
+	//if pay.MD5(str) != bw.Sign {
+	//	zap.L().Debug("pay|CreatedPaidOrder|2|err:签名验证失败")
+	//	client.ReturnErr101Code(c, "签名验证失败")
+	//	return
+	//}
+
+	record := model.Record{}
+	err = mysql.DB.Where("order_num=?", bp.MerNo).First(&record).Error
+	if err != nil {
+		zap.L().Debug("pay|BackPayWowPaid|订单:" + bp.MerNo + ",不存在")
+		client.ReturnErr101Code(c, "无效订单号")
+		return
+	}
+
+	if record.Status == 5 {
+		c.String(http.StatusOK, "SUCCESS")
+		return
+	}
+
+	if bp.TradeResult != "1" {
+		mysql.DB.Model(&model.Record{}).Where("id=?", record.ID).Update(&model.Record{Status: 4, PayFailReason: bp.RespCode, Updated: time.Now().Unix()})
+		c.String(http.StatusOK, "SUCCESS")
+		return
+	}
+
+	//回调成功
+	c.String(http.StatusOK, "SUCCESS")
+	db := mysql.DB.Begin()
+	float, err := strconv.ParseFloat(bp.TransferAmount, 64)
+	err = db.Model(&model.Record{}).Where("id=?", record.ID).Update(&model.Record{
+		Status:            5,
+		Updated:           time.Now().Unix(),
+		AuthenticityMoney: float,
+		ThreeOrderNum:     bp.TradeNo,
+		PaymentTime:       bp.ApplyDate,
+	}).Error
+	if err != nil {
+		db.Rollback()
+		zap.L().Debug("pay|BackPayWowPaid|175|订单:" + bp.MerNo + ",err:" + err.Error())
+		return
+	}
+	//修改冻结提现金额
+	user := model.User{}
+	err = db.Where("id=?", record.UserId).First(&user).Error
+	if err != nil {
+		db.Rollback()
+		zap.L().Debug("pay|BackPayWowPaid|182|订单:" + bp.MerNo + ",err:" + err.Error())
+		return
+	}
+	err = db.Model(&model.User{}).Where("id=?", record.UserId).Update(map[string]interface{}{"WithdrawFreeze": user.WithdrawFreeze - record.Money}).Error
+	if err != nil {
+		db.Rollback()
+		zap.L().Debug("pay|BackPaidLrPay|192|订单:" + bp.MerNo + ",err:" + err.Error())
+		return
+	}
+	db.Commit()
 	return
 
 }

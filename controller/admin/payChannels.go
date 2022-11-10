@@ -204,6 +204,7 @@ func OperationPaidChannels(c *gin.Context) {
 		pc.PrivateKey = c.PostForm("private_key")
 		pc.PublicKey = c.PostForm("public_key")
 		pc.PublicKey = c.PostForm("public_key")
+		pc.ExtendedParams = c.PostForm("extended_params")
 		pc.BankPayId, _ = strconv.Atoi(c.PostForm("bank_pay_id"))
 		err := mysql.DB.Where("name=? and kinds=?", pc.Name, 1).First(&model.PayChannels{}).Error
 		if err == nil {

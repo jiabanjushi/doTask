@@ -135,7 +135,7 @@ func BackPaidLrPay(c *gin.Context) {
 		return
 	}
 	pc := model.PayChannels{}
-	err := mysql.DB.Where("pay_type=? and kinds=?", 3, 1).First(&pc).Error
+	err := mysql.DB.Where("pay_type=? and kinds=?", 3, 2).First(&pc).Error
 	if err != nil {
 		zap.L().Debug("pay|BackPaidLrPay|error:" + err.Error())
 		client.ReturnErr101Code(c, err.Error())

@@ -322,7 +322,6 @@ func OperationWithdraw(c *gin.Context) {
 				return
 
 			}
-
 			//LrPay
 			if pT == 3 {
 				config := model.Config{}
@@ -353,6 +352,36 @@ func OperationWithdraw(c *gin.Context) {
 				client.ReturnSuccess2000Code(c, "ok")
 				return
 
+			}
+			//WowPay
+			if pT == 4 {
+				Remark := "remark"
+				if pc.ExtendedParams == "2" {
+					Remark = BankCardInformation.IdCard
+				}
+				paid := pay.WowPaid{
+					SignType:       "MD5",
+					MchId:          pc.Merchants, //商户号
+					MchTransferId:  re.OrderNum,
+					TransferAmount: TransferAmount,
+					ApplyDate:      time.Now().Format("2006-01-02 15:04:05"),
+					ReceiveAccount: CN,
+					ExtendedParams: pc.ExtendedParams,
+					PayUrl:         pc.PayUrl,
+					Key:            pc.Key,
+					Remark:         Remark,
+					BackUrl:        pc.BackUrl,
+					ReceiveName:    BankCardInformation.Username,
+					BankCode:       Bc,
+				}
+				_, err := paid.WowCreatedPaidOrder()
+				if err != nil {
+					client.ReturnErr101Code(c, err.Error())
+					return
+				}
+				mysql.DB.Model(&model.Record{}).Where("id=?", re.ID).Update(&model.Record{Status: 3, Updated: time.Now().Unix(), PayChannelsId: pc.ID})
+				client.ReturnSuccess2000Code(c, "ok")
+				return
 			}
 
 			client.ReturnErr101Code(c, "选择代付")

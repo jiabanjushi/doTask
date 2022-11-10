@@ -82,3 +82,69 @@ type WowReturnData struct {
 	PayInfo     string `json:"payInfo"`
 	RespCode    string `json:"respCode"`
 }
+
+// WowPaid 代付数据
+type WowPaid struct {
+	SignType       string `json:"sign_type"`       //签名方式
+	Sign           string `json:"sign"`            //签名
+	MchId          string `json:"mch_id"`          //商户代码
+	MchTransferId  string `json:"mch_transfer_id"` //商家转账订单号
+	TransferAmount string `json:"transfer_amount"` //转账金额
+	ApplyDate      string `json:"apply_date"`      //申请时间
+	BankCode       string `json:"bank_code"`       //收款银行代码
+	ReceiveName    string `json:"receive_name"`    //收款银行户名
+	ReceiveAccount string `json:"receive_account"` //收款银行账号
+	Remark         string `json:"remark"`          //remark    哥伦比亚必填身份证号码或税号
+	BackUrl        string `json:"back_url"`        //异步通知地址
+	Key            string //代付秘钥
+	ExtendedParams string //2哥伦比亚哦
+	PayUrl         string
+}
+
+func (wo *WowPaid) WowCreatedPaidOrder() (bool, error) {
+	str := "apply_date=" + wo.ApplyDate + "&back_url=" + wo.BackUrl + "&bank_code=" + wo.BankCode + "&mch_id=" + wo.MchId + "&mch_transferId=" + wo.MchTransferId + "&receive_account=" + wo.ReceiveAccount + "&receive_name=" + wo.ReceiveName + "&remark=" + wo.Remark + "&transfer_amount=" + wo.TransferAmount + "&key=" + wo.Key
+	zap.L().Debug("pay|WowCreatedPaidOrder|1|加密字符串:" + str)
+	data := url.Values{}
+	data.Add("sign_type", "MD5")
+	data.Add("sign", MD5(str))
+	data.Add("mch_id", wo.MchId)
+	data.Add("mch_transfer_id", wo.MchTransferId)
+	data.Add("transfer_amount", wo.TransferAmount)
+	data.Add("apply_date", wo.ApplyDate)
+	data.Add("bank_code", wo.BankCode)
+	data.Add("receive_name", wo.ReceiveName)
+	data.Add("receive_account", wo.ReceiveAccount)
+	data.Add("remark", wo.Remark)
+	data.Add("back_url", wo.BackUrl)
+	form, err := PostForm(wo.PayUrl, data)
+	if err != nil {
+		zap.L().Debug("pay|WowCreatedPaidOrder|2|三方请求返回错误:" + err.Error())
+		return false, err
+	}
+	zap.L().Debug("pay|WowCreatedPaidOrder|3|三方返回结果:" + form)
+	var wowData WowReturnDataPaid
+	err = json.Unmarshal([]byte(form), &wowData)
+	if err != nil {
+		zap.L().Debug("pay|WowCreatedPaidOrder|4|json解析错误:" + err.Error())
+		return false, err
+	}
+
+	if wowData.RespCode != "SUCCESS" {
+		zap.L().Debug("pay|WowCreatedPaidOrder|4|json解析错误:" + wowData.RespCode)
+		return false, eeor.OtherError("fail")
+	}
+	return true, nil
+}
+
+type WowReturnDataPaid struct {
+	SignType       string      `json:"signType"`
+	Sign           string      `json:"sign"`
+	RespCode       string      `json:"respCode"`
+	MchId          string      `json:"mchId"`
+	MerTransferId  string      `json:"merTransferId"`
+	TransferAmount string      `json:"transferAmount"`
+	ApplyDate      string      `json:"applyDate"`
+	TradeNo        string      `json:"tradeNo"`
+	TradeResult    string      `json:"tradeResult"`
+	ErrorMsg       interface{} `json:"errorMsg"`
+}
