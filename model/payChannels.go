@@ -6,6 +6,7 @@ import (
 	eeor "github.com/wangyi/GinTemplate/error"
 	"github.com/wangyi/GinTemplate/pay"
 	"strconv"
+	"time"
 )
 
 // PayChannels 支付/代付通道
@@ -107,6 +108,28 @@ func (py *PayChannelsChoose) ChoosePay(db *gorm.DB) (string, error) {
 			return "", err
 		}
 		return order, nil
+	}
+
+	//墨西哥 WowPay
+	if py.PayChannels.PayType == 4 {
+		Wow := pay.WowPay{
+			Key:         py.PayChannels.Key,
+			MchId:       py.PayChannels.Merchants,
+			PayType:     py.PayChannels.PayCode,
+			Version:     "1.0",
+			NotifyUrl:   py.PayChannels.BackUrl,
+			MchOrderNo:  py.Record.OrderNum,
+			TradeAmount: strconv.FormatFloat(py.Record.Money, 'f', 2, 64),
+			OrderDate:   time.Now().Format("2006-01-02 15:04:05"),
+			GoodsName:   "goods",
+			SignType:    "MD5",
+		}
+		order, err := Wow.WowPayCreatedOrder()
+		if err != nil {
+			return "", err
+		}
+		return order, nil
+
 	}
 
 	return "", eeor.OtherError("There is no matching PayType ")
