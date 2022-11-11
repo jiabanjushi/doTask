@@ -203,10 +203,11 @@ func OperationUser(c *gin.Context) {
 			return
 		}
 
+		//添加银行卡
 		if operation == "addBank" {
 			userId := c.PostForm("user_id")
 			//判断这个用户是否已经有银行卡了?
-			err := mysql.DB.Where("user_id=?", userId).First(&model.User{}).Error
+			err := mysql.DB.Where("user_id=?", userId).First(&model.BankCardInformation{}).Error
 			if err == nil {
 				client.ReturnErr101Code(c, "不要重复添加卡号")
 				return
@@ -229,7 +230,7 @@ func OperationUser(c *gin.Context) {
 			}
 
 			err = mysql.DB.Save(&addBank).Error
-			if err == nil {
+			if err != nil {
 				client.ReturnErr101Code(c, err.Error())
 				return
 			}
