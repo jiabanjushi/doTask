@@ -184,7 +184,7 @@ func BackPayWowPaid(c *gin.Context) {
 	}
 
 	record := model.Record{}
-	err = mysql.DB.Where("order_num=?", bp.MerNo).First(&record).Error
+	err = mysql.DB.Where("order_num=?", bp.MerTransferId).First(&record).Error
 	if err != nil {
 		zap.L().Debug("pay|BackPayWowPaid|订单:" + bp.MerNo + ",不存在")
 		client.ReturnErr101Code(c, "无效订单号")
