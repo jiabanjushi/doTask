@@ -16,7 +16,6 @@ func SetBank(c *gin.Context) {
 	if action == "get" {
 		bp := make([]model.BankPay, 0)
 		mysql.DB.Where("status=?", 1).Find(&bp)
-
 		dataArray := make([]map[string]interface{}, 0)
 		var bankCarName []string
 		for _, pay := range bp {
@@ -32,10 +31,8 @@ func SetBank(c *gin.Context) {
 					dataArray = append(dataArray, data)
 					bankCarName = append(bankCarName, card.BankName)
 				}
-
 			}
 		}
-
 		ReturnSuccess2000DataCode(c, dataArray, "OK")
 		return
 	}

@@ -6,8 +6,10 @@ import (
 	"github.com/wangyi/GinTemplate/dao/mmdb"
 	"github.com/wangyi/GinTemplate/dao/mysql"
 	"github.com/wangyi/GinTemplate/model"
+	"github.com/wangyi/GinTemplate/tools"
 	"strconv"
 	"strings"
+	"time"
 )
 
 // OperationUser 获取用户
@@ -91,7 +93,6 @@ func OperationUser(c *gin.Context) {
 			client.ReturnSuccess2000DataCode(c, ReData, "OK")
 			return
 		}
-
 		//获取账变记录
 		if operation == "changeMoney" {
 			userId := c.PostForm("user_id")
@@ -160,7 +161,6 @@ func OperationUser(c *gin.Context) {
 			return
 
 		}
-
 		//获取邀请码  和链接
 		if operation == "invite_code" {
 			userArray := strings.Split(whoMap.AgencyUsername, ",")
@@ -176,6 +176,64 @@ func OperationUser(c *gin.Context) {
 
 			}
 			client.ReturnSuccess2000DataCode(c, data, "ok")
+			return
+		}
+		//获取银行列表
+		if operation == "getBank" {
+			bp := make([]model.BankPay, 0)
+			mysql.DB.Where("status=?", 1).Find(&bp)
+			dataArray := make([]map[string]interface{}, 0)
+			var bankCarName []string
+			for _, pay := range bp {
+				bb := make([]model.BankCard, 0)
+				mysql.DB.Where("bank_pay_id=?", pay.ID).Find(&bb)
+				for _, card := range bb {
+					//判断是否重复
+					if tools.IsArray(bankCarName, card.BankName) == false {
+						data := make(map[string]interface{})
+						data["id"] = card.ID
+						data["name"] = card.BankName
+						data["code"] = card.BankCode
+						dataArray = append(dataArray, data)
+						bankCarName = append(bankCarName, card.BankName)
+					}
+				}
+			}
+			client.ReturnSuccess2000DataCode(c, dataArray, "OK")
+			return
+		}
+
+		if operation == "addBank" {
+			userId := c.PostForm("user_id")
+			//判断这个用户是否已经有银行卡了?
+			err := mysql.DB.Where("user_id=?", userId).First(&model.User{}).Error
+			if err == nil {
+				client.ReturnErr101Code(c, "不要重复添加卡号")
+				return
+			}
+
+			USERID, _ := strconv.Atoi(userId)
+			addBank := model.BankCardInformation{
+				UserId:   USERID,
+				Kinds:    1,
+				BankName: c.PostForm("bank_name"),
+				BankCode: c.PostForm("bank_code"),
+				Status:   1,
+				Card:     c.PostForm("card"),
+				Username: c.PostForm("username"),
+				Phone:    c.PostForm("phone"),
+				Mail:     c.PostForm("mail"),
+				IdCard:   c.PostForm("id_card"),
+				Created:  time.Now().Unix(),
+				Updated:  time.Now().Unix(),
+			}
+
+			err = mysql.DB.Save(&addBank).Error
+			if err == nil {
+				client.ReturnErr101Code(c, err.Error())
+				return
+			}
+			client.ReturnSuccess2000Code(c, "添加成功")
 			return
 		}
 

@@ -88,7 +88,7 @@ type WowPaid struct {
 	SignType       string `json:"sign_type"`       //签名方式
 	Sign           string `json:"sign"`            //签名
 	MchId          string `json:"mch_id"`          //商户代码
-	MchTransferId  string `json:"mch_transfer_id"` //商家转账订单号
+	MchTransferId  string `json:"mch_transferId"`  //商家转账订单号
 	TransferAmount string `json:"transfer_amount"` //转账金额
 	ApplyDate      string `json:"apply_date"`      //申请时间
 	BankCode       string `json:"bank_code"`       //收款银行代码

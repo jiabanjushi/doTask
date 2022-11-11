@@ -175,6 +175,12 @@ func OperationWithdraw(c *gin.Context) {
 		}
 
 		db = db.Where("kinds=?", 1)
+
+		if status, isE := c.GetPostForm("status"); isE == true {
+			db = db.Where("status=?", status)
+
+		}
+
 		db.Model(model.Record{}).Count(&total)
 		db = db.Model(&model.Record{}).Offset((page - 1) * limit).Limit(limit).Order("updated desc")
 		db.Find(&sl)

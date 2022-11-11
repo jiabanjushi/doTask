@@ -37,7 +37,7 @@ func OperationFirstPage(c *gin.Context) {
 			}
 			var data Data
 			today := model.Statistics{}
-			mysql.DB.Where("data=?", time.Now().Format("2006-01-02")).First(&today)
+			mysql.DB.Where("date=?", time.Now().Format("2006-01-02")).First(&today)
 			data.Today = today
 			//总统计
 			//RegisterNum

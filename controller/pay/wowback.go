@@ -1,6 +1,7 @@
 package pay
 
 import (
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/wangyi/GinTemplate/controller/client"
 	"github.com/wangyi/GinTemplate/dao/mysql"
@@ -127,17 +128,17 @@ func BackPayWowPay(c *gin.Context) {
 }
 
 type BackPayWowPaidData struct {
-	TradeResult    string `json:"tradeResult"`    //订单状态     String  Y  1：代付成功；2：代付失败
-	MerTransferId  string `json:"merTransferId"`  // 商家转账单号  String  Y  代付使用的转账单号
-	MerNo          string `json:"merNo"`          //  商户代码  String  Y  平台分配唯一
-	TradeNo        string `json:"tradeNo"`        // 平台订单号  String  Y  平台唯一
-	TransferAmount string `json:"transferAmount"` //代付金额  String  Y  元为单位保留俩位小数
-	ApplyDate      string `json:"applyDate"`      // 订单时间  String  Y  订单时间
-	Version        string `json:"version"`        //  版本号  String  Y  默认1.0
-	RespCode       string `json:"respCode"`       //   回调状态  String  Y  默认SUCCESS
+	TradeResult    string `form:"tradeResult"`    //订单状态     String  Y  1：代付成功；2：代付失败
+	MerTransferId  string `form:"merTransferId"`  // 商家转账单号  String  Y  代付使用的转账单号
+	MerNo          string `form:"merNo"`          //  商户代码  String  Y  平台分配唯一
+	TradeNo        string `form:"tradeNo"`        // 平台订单号  String  Y  平台唯一
+	TransferAmount string `form:"transferAmount"` //代付金额  String  Y  元为单位保留俩位小数
+	ApplyDate      string `form:"applyDate"`      // 订单时间  String  Y  订单时间
+	Version        string `form:"version"`        //  版本号  String  Y  默认1.0
+	RespCode       string `form:"respCode"`       //   回调状态  String  Y  默认SUCCESS
 
-	Sign     string `json:"sign"`     //   签名  String  N  不参与签名
-	SignType string `json:"signType"` //  签名方式  String  N  MD5 不参与签名
+	Sign     string `form:"sign"`     //   签名  String  N  不参与签名
+	SignType string `form:"signType"` //  签名方式  String  N  MD5 不参与签名
 }
 
 // BackPayWowPaid 代付回调
@@ -174,6 +175,8 @@ func BackPayWowPaid(c *gin.Context) {
 		"respCode":       bp.RespCode,
 	}
 	//签名验证
+
+	fmt.Println(SortString(param) + "&key=" + pc.Key)
 	if pay.MD5(SortString(param)+"&key="+pc.Key) != bp.Sign {
 		zap.L().Debug("pay|CreatedPaidOrder|2|err:签名验证失败")
 		client.ReturnErr101Code(c, "签名验证失败")
