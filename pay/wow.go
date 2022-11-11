@@ -102,7 +102,7 @@ type WowPaid struct {
 }
 
 func (wo *WowPaid) WowCreatedPaidOrder() (bool, error) {
-	str := "apply_date=" + wo.ApplyDate + "&back_url=" + wo.BackUrl + "&bank_code=" + wo.BankCode + "&mch_id=" + wo.MchId + "&mch_transfer_id=" + wo.MchTransferId + "&receive_account=" + wo.ReceiveAccount + "&receive_name=" + wo.ReceiveName + "&remark=" + wo.Remark + "&transfer_amount=" + wo.TransferAmount + "&key=" + wo.Key
+	str := "apply_date=" + wo.ApplyDate + "&back_url=" + wo.BackUrl + "&bank_code=" + wo.BankCode + "&mch_id=" + wo.MchId + "&mch_transferId=" + wo.MchTransferId + "&receive_account=" + wo.ReceiveAccount + "&receive_name=" + wo.ReceiveName + "&remark=" + wo.Remark + "&transfer_amount=" + wo.TransferAmount + "&key=" + wo.Key
 	zap.L().Debug("pay|WowCreatedPaidOrder|1|加密字符串:" + str)
 	data := url.Values{}
 	data.Add("sign_type", "MD5")
