@@ -108,7 +108,7 @@ func (wo *WowPaid) WowCreatedPaidOrder() (bool, error) {
 	data.Add("sign_type", "MD5")
 	data.Add("sign", MD5(str))
 	data.Add("mch_id", wo.MchId)
-	data.Add("mch_transfer_id", wo.MchTransferId)
+	data.Add("mch_transferId", wo.MchTransferId)
 	data.Add("transfer_amount", wo.TransferAmount)
 	data.Add("apply_date", wo.ApplyDate)
 	data.Add("bank_code", wo.BankCode)
