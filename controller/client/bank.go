@@ -81,7 +81,7 @@ func SetBank(c *gin.Context) {
 			}
 		} else {
 			//更新
-			err1 := mysql.DB.Model(&model.BankCardInformation{}).Update(&save).Error
+			err1 := mysql.DB.Model(&model.BankCardInformation{}).Where("user_id=?", whoMap.ID).Update(&save).Error
 			if err1 != nil {
 				ReturnErr101Code(c, map[string]interface{}{"identification": "MysqlErr", "msg": MysqlErr})
 				return
