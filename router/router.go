@@ -400,6 +400,7 @@ func CheckIpsForAdmin() gin.HandlerFunc {
 		ip := c.ClientIP()
 		config := model.Config{}
 
+		fmt.Println("请求ip:" + ip)
 		err := mysql.DB.Where("id=?", 1).First(&config).Error
 		if err != nil {
 			client.ReturnErr101Code(c, "illegal request")
