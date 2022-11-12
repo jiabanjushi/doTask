@@ -12,13 +12,15 @@ type Config struct {
 	AdminGoogleStatus   int     `gorm:"default:1;comment:'管理员是否要登录是否要谷歌验证,status 1需要 2不需要'"`
 	WithdrawalHand      float64 `gorm:"type:decimal(10,2);default:0.00"`
 	SystemMinWithdrawal float64 `gorm:"type:decimal(10,2);default:100.00"`
-	AutomaticPoints     int     `gorm:"default:1"` //自动上分
+	AutomaticPoints     int     `gorm:"default:1"`
 	TimeZone            string
 	SettlementWaitTime  int64  `gorm:"default:90"`
 	TaskTimeout         int64  `gorm:"default:5400"`
 	WebsiteH5           string //前段H5  域名
 	SystemCurrency      string `gorm:"default:'$MEX'"` //系统货币符号
 	PhpUrl              string //php加密地址
+	WhiteIps            string //全局白名单
+	WhiteIpsSwitch      int    `gorm:"default:2"` //1开 2关闭  白名单的开关
 }
 
 // CheckIsExistModelConfig   创建Config

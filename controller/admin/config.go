@@ -29,9 +29,8 @@ func OperationConfiguration(c *gin.Context) {
 		//基本设置
 		if kinds == 1 {
 			requestLimit, _ := strconv.Atoi(c.PostForm("request_limit"))
-			adminGoogleStatus, _ := strconv.Atoi(c.PostForm("admin_google_status"))
 			newConfig.RequestLimit = requestLimit
-			newConfig.AdminGoogleStatus = adminGoogleStatus
+
 			newConfig.SettlementWaitTime, _ = strconv.ParseInt(c.PostForm("settlement_wait_time"), 10, 64)
 			newConfig.TaskTimeout, _ = strconv.ParseInt(c.PostForm("task_timeout"), 10, 64)
 			newConfig.WebsiteH5 = c.PostForm("website_h5")
@@ -54,6 +53,24 @@ func OperationConfiguration(c *gin.Context) {
 			newConfig.WithdrawalHand, _ = strconv.ParseFloat(c.PostForm("withdrawal_hand"), 64)
 			newConfig.SystemMinWithdrawal, _ = strconv.ParseFloat(c.PostForm("System_min_withdrawal"), 64)
 			newConfig.AutomaticPoints, _ = strconv.Atoi(c.PostForm("automatic_points"))
+
+		}
+		//安全设置
+		if kinds == 3 {
+			adminGoogleStatus, _ := strconv.Atoi(c.PostForm("admin_google_status"))
+			newConfig.AdminGoogleStatus = adminGoogleStatus
+			newConfig.WhiteIps = c.PostForm("white_ips")
+			newConfig.WhiteIpsSwitch, _ = strconv.Atoi(c.PostForm("white_ips_switch"))
+
+			//
+			if newConfig.WhiteIpsSwitch == 1 {
+				config := model.Config{}
+				mysql.DB.Where("id=?", 1).First(&config)
+				if config.WhiteIps == "" {
+					client.ReturnErr101Code(c, "白名单ip不可以为空")
+					return
+				}
+			}
 
 		}
 		err := mysql.DB.Model(&model.Config{}).Where("id=?", 1).Update(&newConfig).Error

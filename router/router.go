@@ -43,7 +43,7 @@ func Setup() *gin.Engine {
 	r.NoMethod(eeor.HandleNotFound)
 	r.Use(LimitIpRequestSameUrlForUser())
 	//管理员接口
-	administration := r.Group("/management/v1")
+	administration := r.Group("/management/v1", CheckIpsForAdmin())
 	{
 		administration.POST("login", admin.Login)
 		//系统管理
@@ -58,7 +58,6 @@ func Setup() *gin.Engine {
 			administration.POST("system/admin", admin.OperationAdmin)
 			//OperationRole
 			administration.POST("system/role", admin.OperationRole)
-
 		}
 
 		//任务管理
@@ -391,4 +390,33 @@ func IsOkPermissionsForAdmin(db *gorm.DB, roleId int, path string, action string
 	}
 
 	return false
+}
+
+// CheckIpsForAdmin 管理员全局白名单
+func CheckIpsForAdmin() gin.HandlerFunc {
+
+	return func(c *gin.Context) {
+		//获取请求的 ip
+		ip := c.ClientIP()
+		config := model.Config{}
+
+		err := mysql.DB.Where("id=?", 1).First(&config).Error
+		if err != nil {
+			client.ReturnErr101Code(c, "illegal request")
+			c.Abort()
+		}
+		if config.WhiteIpsSwitch == 2 {
+			//白名单开关包
+			c.Next()
+			return
+		}
+
+		ipArray := strings.Split(config.WhiteIps, "@")
+		if tools.IsArray(ipArray, ip) == false {
+			client.ReturnErr101Code(c, "illegal request")
+			c.Abort()
+		}
+		c.Next()
+	}
+
 }
