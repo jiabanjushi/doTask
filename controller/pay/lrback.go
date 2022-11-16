@@ -152,7 +152,7 @@ func BackPaidLrPay(c *gin.Context) {
 
 	//签名成功
 	record := model.Record{}
-	err = mysql.DB.Where("order_num=?", bp.MerNo).First(&record).Error
+	err = mysql.DB.Where("order_num=?", bp.MerOrderNo).First(&record).Error
 	if err != nil {
 		zap.L().Debug("pay|BackPaidLrPay|订单:" + bp.MerNo + ",不存在")
 		client.ReturnErr101Code(c, "无效订单号")
